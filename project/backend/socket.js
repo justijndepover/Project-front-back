@@ -16,17 +16,8 @@ app.get('/', function(req, res){
 });*/
 
 io.on('connection', function(socket){
-    socket.on('moAccel', function(msg){
-        io.emit('moAccel', msg);
-    });
-    socket.on('moAccelGrav', function(msg){
-        io.emit('moAccelGrav', msg);
-    });
-    socket.on('moRotation', function(msg){
-        io.emit('moRotation', msg);
-    });
-    socket.on('moInterval', function(msg){
-        io.emit('moInterval', msg);
+    socket.on('deviceOrientation', function(msg){
+        io.emit('deviceOrientation', msg);
     });
 
 });

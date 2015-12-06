@@ -3,91 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+</head>
+<body>
+<div class="main">
+    <div class="main">
+        <h2>Device Orientation</h2>
+        <table>
+            <tr>
+                <td>Event Supported</td>
+                <td id="doEvent"></td>
+            </tr>
+            <tr>
+                <td>Tilt Left/Right [gamma]</td>
+                <td id="doTiltLR"></td>
+            </tr>
+            <tr>
+                <td>Tilt Front/Back [beta]</td>
+                <td id="doTiltFB"></td>
+            </tr>
+            <tr>
+                <td>Direction [alpha]</td>
+                <td id="doDirection"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="container" style="perspective: 300;">
+        <img src="img/testimg.png" id="imgLogo" class="logo">
+    </div>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
 
         var socket = io("http://192.168.1.39:3000");
 
-        /*socket.on('moAccel', function(msg){
-            document.getElementById("moAccel").innerHTML = msg;
-        });
-        socket.on('moAccelGrav', function(msg){
-            document.getElementById("moAccelGrav").innerHTML = msg;
-        });
-        socket.on('moRotation', function(msg){
-            document.getElementById("moRotation").innerHTML = msg;
-        });
-        socket.on('moInterval', function(msg){
-            document.getElementById("moInterval").innerHTML = msg;
-        });*/
-
-        if (window.DeviceMotionEvent) {
-            window.addEventListener('devicemotion', deviceMotionHandler, false);
+        if (window.DeviceOrientationEvent) {
+            document.getElementById("doEvent").innerHTML = "DeviceOrientation";
+            // Listen for the deviceorientation event and handle the raw data
+            window.addEventListener('deviceorientation', function(eventData) {
+                var gba = {};
+                gba.gamma = eventData.gamma;
+                gba.beta = eventData.beta;
+                gba.alpha = eventData.alpha;
+                deviceOrientationHandler(gba.gamma, gba.beta, gba.alpha);
+                socket.emit('deviceOrientation', gba);
+            }, false);
         } else {
-            document.getElementById("dmEvent").innerHTML = "Not supported."
+            document.getElementById("doEvent").innerHTML = "Not supported."
         }
-        function deviceMotionHandler(eventData) {
-            var info, xyz = {};
+        function deviceOrientationHandler(tiltLR, tiltFB, dir){
+            document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
+            document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
+            document.getElementById("doDirection").innerHTML = Math.round(dir);
 
-            // Grab the acceleration from the results
-           /* var acceleration = eventData.acceleration;
-            info = xyz.replace("X", acceleration.x);
-            info = info.replace("Y", acceleration.y);
-            info = info.replace("Z", acceleration.z);
-            socket.emit('moAccel', info);
-
-            // Grab the acceleration including gravity from the results
-            acceleration = eventData.accelerationIncludingGravity;
-            info = xyz.replace("X", acceleration.x);
-            info = info.replace("Y", acceleration.y);
-            info = info.replace("Z", acceleration.z);
-            socket.emit('moAccelGrav', info);*/
-
-            // Grab the rotation rate from the results
-            /*var rotation = eventData.rotationRate;
-            info = xyz.replace("X", rotation.alpha);
-            info = info.replace("Y", rotation.beta);
-            info = info.replace("Z", rotation.gamma);
-            socket.emit('moRotation', info);
-            */
-            var rotation = eventData.rotationRate;
-            xyz.alpha = rotation.alpha;
-            xyz.beta = rotation.beta;
-            xyz.gamma = rotation.gamma;
-            socket.emit('moRotation', xyz);
-            /*
-            // // Grab the refresh interval from the results
-            info = eventData.interval;
-            socket.emit('moInterval', info);*/
+            var logo = document.getElementById("imgLogo");
+            logo.style.webkitTransform =
+                    "rotate("+ tiltLR +"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+            logo.style.MozTransform = "rotate("+ tiltLR +"deg)";
+            logo.style.transform =
+                    "rotate("+ tiltLR +"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
         }
     </script>
-</head>
-<body>
-<div class="main">
-    <h2>Device Motion</h2>
-    <table>
-        <tr>
-            <td>Event Supported</td>
-            <td id="dmEvent"></td>
-        </tr>
-        <tr>
-            <td>acceleration</td>
-            <td id="moAccel"></td>
-        </tr>
-        <tr>
-            <td>accelerationIncludingGravity</td>
-            <td id="moAccelGrav"></td>
-        </tr>
-        <tr>
-            <td>rotationRate</td>
-            <td id="moRotation"></td>
-        </tr>
-        <tr>
-            <td>interval</td>
-            <td id="moInterval"></td>
-        </tr>
-    </table>
 </div>
 </body>
 </html>

@@ -31,13 +31,13 @@
 </div>
 
 <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
     var logo = document.getElementById("imgLogo");
     var socket = io("http://192.168.1.39:3000");
 
 
-    socket.on('moRotation', function(msg){
+    socket.on('deviceOrientation', function(msg){
         document.getElementById("doTiltLR").innerHTML = Math.round(msg.gamma);
         document.getElementById("doTiltFB").innerHTML = Math.round(msg.beta);
         document.getElementById("doDirection").innerHTML = Math.round(msg.alpha);
