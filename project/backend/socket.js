@@ -4,9 +4,22 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var fs = require('fs');
+var path = require("path");
 
 app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(path.join(__dirname, '..', '/mobile/index.html'));
+});
+
+app.get('/sockettest.html', function(req, res){
+    res.sendFile(path.join(__dirname, '..', '/src/sockettest.html'));
+});
+app.get('/canvasSocketTest.html', function(req, res){
+    res.sendFile(path.join(__dirname, '..', '/src/canvasSocketTest.html'));
+});
+
+app.get('/img/testimg.png', function(req, res){
+    res.sendFile(path.join(__dirname, '..', '/src/img/testimg.png'));
 });
 
 /*io.on('connection', function(socket){
@@ -23,5 +36,6 @@ io.on('connection', function(socket){
 });
 
 http.listen(3000, function(){
+    console.log();
     console.log('listening on *:3000');
 });
