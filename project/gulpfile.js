@@ -12,9 +12,9 @@ var gulp = require("gulp"),
     jshint = require("gulp-jshint"),
     jsStylish = require("jshint-stylish"),
     uglify = require("gulp-uglify"),
-    gulpWebpack = require("gulp-webpack"),
-    webpackConfig = require("./webpack.config.js"),
-    stream = require("webpack-stream");
+    //gulpWebpack = require("gulp-webpack"),
+    //webpackConfig = require("./webpack.config.js"),
+    //stream = require("webpack-stream");
 
 var path = {
     HTML: 'src/index.html',
@@ -27,8 +27,9 @@ var path = {
 
 gulp.task("default", function(){
 
-    gulp.watch("./src/less/**/*.less", ['css']);
-    gulp.watch(path.ALL, ['webpack']);
+    gulp.watch("./src/less/desktop/**/*.less", ['css_desktop']);
+    gulp.watch("./src/less/mobile/**/*.less", ['css_mobile']);
+    //gulp.watch(path.ALL, ['webpack']);
 });
 
 gulp.task("webpack", function(){
@@ -40,9 +41,9 @@ gulp.task("webpack", function(){
         .pipe(gulp.dest(path.DEST_BUILD));
 });
 
-gulp.task("css", function(){
+gulp.task("css_mobile", function(){
 
-    gulp.src("./src/less/**/*.less")
+    gulp.src("./src/less/mobile/**/*.less")
         .pipe(less())
         .pipe(csslint(
             {
@@ -50,9 +51,28 @@ gulp.task("css", function(){
             }))
         .pipe(sourcemaps.init())
         .pipe(cssMinifier())
-        .pipe(concat("site.css"))
+        .pipe(concat("mobile.min.css"))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest("./src/dist/css"))
+        .pipe(gulp.dest("./mobile/css"))
+        .pipe(notify({
+            message: "css built"
+        }));
+
+});
+
+gulp.task("css_desktop", function(){
+
+    gulp.src("./src/less/desktop/**/*.less")
+        .pipe(less())
+        .pipe(csslint(
+            {
+                'ids': false
+            }))
+        .pipe(sourcemaps.init())
+        .pipe(cssMinifier())
+        .pipe(concat("desktop.min.css"))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest("./mobile/css"))
         .pipe(notify({
             message: "css built"
         }));

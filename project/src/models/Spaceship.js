@@ -3,6 +3,7 @@
  */
 
 var Spaceship = function(gamerId, x, y){
+    this.orientation = 0;
     this.gamerId = gamerId;
     this.x = x;
     this.y = y;
