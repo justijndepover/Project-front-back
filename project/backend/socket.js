@@ -30,6 +30,7 @@ app.get('/img/testimg.png', function(req, res){
 
 io.on('connection', function(socket){
     socket.on('deviceOrientation', function(msg){
+        console.log("device connected");
         io.emit('deviceOrientation', msg);
     });
 
