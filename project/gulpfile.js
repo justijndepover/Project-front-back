@@ -10,8 +10,8 @@ var gulp = require("gulp"),
     less = require("gulp-less"),
     notify = require("gulp-notify"),
     jshint = require("gulp-jshint"),
-    jsStylish = require("jshint-stylish"),
-    uglify = require("gulp-uglify"),
+    jsstylish = require("jshint-stylish"),
+    uglify = require("gulp-uglify");
     //gulpWebpack = require("gulp-webpack"),
     //webpackConfig = require("./webpack.config.js"),
     //stream = require("webpack-stream");
@@ -27,21 +27,22 @@ var path = {
 
 gulp.task("default", function(){
 
-    gulp.watch("./src/less/desktop/**/*.less", ['css_desktop']);
-    gulp.watch("./src/less/mobile/**/*.less", ['css_mobile']);
+    gulp.watch("./src/less/desktop/**/*.less", ['css-desktop-build']);
+    gulp.watch("./src/less/mobile/**/*.less", ['css-mobile-build']);
+    gulp.watch("./src/js/**/*.js", ['js-desktop-build', 'js-mobile-build']);
     //gulp.watch(path.ALL, ['webpack']);
 });
 
-gulp.task("webpack", function(){
+/*gulp.task("webpack", function(){
     gulp.src(path.ALL)
         .pipe(sourcemaps.init())
         .pipe(stream(webpackConfig))
         .pipe(uglify())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(path.DEST_BUILD));
-});
+});*/
 
-gulp.task("css_mobile", function(){
+gulp.task("css-mobile-build", function(){
 
     gulp.src("./src/less/mobile/**/*.less")
         .pipe(less())
@@ -51,16 +52,12 @@ gulp.task("css_mobile", function(){
             }))
         .pipe(sourcemaps.init())
         .pipe(cssMinifier())
-        .pipe(concat("mobile.min.css"))
+        .pipe(concat("app.min.css"))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest("./mobile/css"))
-        .pipe(notify({
-            message: "css built"
-        }));
-
+        .pipe(gulp.dest("./dist/mobile/css"));
 });
 
-gulp.task("css_desktop", function(){
+gulp.task("css-desktop-build", function(){
 
     gulp.src("./src/less/desktop/**/*.less")
         .pipe(less())
@@ -70,11 +67,29 @@ gulp.task("css_desktop", function(){
             }))
         .pipe(sourcemaps.init())
         .pipe(cssMinifier())
-        .pipe(concat("desktop.min.css"))
+        .pipe(concat("app.min.css"))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest("./mobile/css"))
-        .pipe(notify({
-            message: "css built"
-        }));
+        .pipe(gulp.dest("./dist/desktop/css"));
+});
 
+gulp.task("js-mobile-build", function(){
+    gulp.src("./src/js/mobile/**/*.js")
+        //.pipe(jshint())
+        //.pipe(jshint.reporter(jsstylish))
+        .pipe(sourcemaps.init())
+        .pipe(concat("app.min.js"))
+        .pipe(uglify())
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest("./dist/mobile/js"));
+});
+
+gulp.task("js-desktop-build", function(){
+    gulp.src("./src/js/desktop/**/*.js")
+        //.pipe(jshint())
+        //.pipe(jshint.reporter(jsstylish))
+        .pipe(sourcemaps.init())
+        .pipe(concat("app.min.js"))
+        .pipe(uglify())
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest("./dist/desktop/js"));
 });
