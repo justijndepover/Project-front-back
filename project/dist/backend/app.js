@@ -11,7 +11,13 @@ http.listen(3000);
 
 // routing
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '..', '/mobile/chat.html'));
+    res.sendFile(path.join(__dirname, '..', '/mobile/index.html'));
+});
+app.get('/lib/angular/angular.js', function (req, res) {
+    res.sendFile(path.join(__dirname, '../..', '/lib/angular/angular.js'));
+});
+app.get('/js/app.min.js', function (req, res) {
+    res.sendFile(path.join(__dirname, '..', '/mobile/js/app.min.js'));
 });
 
 // usernames which are currently connected to the chat
@@ -41,10 +47,11 @@ io.sockets.on('connection', function (socket) {
             // join room
             socket.join(data.room);
             // add the client's username to the global list
-            usernames[username] = username;
+            usernames[username] = data.username;
 
             data.room.emit('updateusers', usernames);
             calback(null,'user toegevoegt');
+            console.log(data.username)
         }
         else{
             calback('error', 'room bestaat niet');
