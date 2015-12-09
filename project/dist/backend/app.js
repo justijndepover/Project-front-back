@@ -25,7 +25,7 @@ var usernames = {};
 
 // rooms which are currently available in chat
 var rooms = {};
-rooms["halo"]="hallo";
+rooms["hallo"]="hallo";
 
 var pcs = {};
 
@@ -47,11 +47,10 @@ io.sockets.on('connection', function (socket) {
             // join room
             socket.join(data.room);
             // add the client's username to the global list
-            usernames[username] = data.username;
+            usernames[data.username] = data.username;
 
-            data.room.emit('updateusers', usernames);
+            socket.to(data.room).emit('updateusers', usernames);
             calback(null,'user toegevoegt');
-            console.log(data.username)
         }
         else{
             calback('error', 'room bestaat niet');
@@ -61,7 +60,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('gsmDisconnect',function(msg){
         delete usernames[socket.username];
         socket.leave(socket.room);
-        socket.room.emit('updateusers', usernames);
+        socket.to(room).emit('updateusers', usernames);
 
     });
 
@@ -77,7 +76,7 @@ io.sockets.on('connection', function (socket) {
             delete usernames[socket.username];
 
             socket.leave(socket.room);
-            socket.room.emit('updateusers', usernames);
+            socket.to(socket.room).emit('updateusers', usernames);
         }else{
             delete rooms[socket.room];
         }

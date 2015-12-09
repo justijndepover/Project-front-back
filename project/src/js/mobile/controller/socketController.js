@@ -9,7 +9,7 @@
 
 
         //functions
-        var joinRoom = function(username, room){
+        $scope.joinRoom = function(username, room){
             var data = {};
             data.username = username;
             data.room = room;
@@ -27,12 +27,8 @@
             data.delta = eventData.delta;
             socketService.emit("deviceOrientation", data)
         };
-
-        var test = function(){};
-
-        //public
         return{
-            joinRoom: joinRoom,
+
             leaveRoom: leaveRoom,
             sendDeviceOrientation: sendDeviceOrientation
         }
