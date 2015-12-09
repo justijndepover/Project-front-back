@@ -3,7 +3,6 @@
  */
 
 (function(){
-
     var socketController = function($scope, socketService){
 
         //private
@@ -40,4 +39,5 @@
     };
 
     angular.module("app").controller("socketController", ["$scope", "socketService", socketController]);
+
 })();
