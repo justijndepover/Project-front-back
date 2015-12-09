@@ -73,7 +73,8 @@ gulp.task("css-desktop-build", function(){
 });
 
 gulp.task("js-mobile-build", function(){
-    gulp.src("./src/js/mobile/**/*.js")
+    gulp.src(["./src/app.js",
+        "./src/js/mobile/**/*.js"])
         //.pipe(jshint())
         //.pipe(jshint.reporter(jsstylish))
         .pipe(sourcemaps.init())

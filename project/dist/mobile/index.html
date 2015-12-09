@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
     <meta charset="UTF-8">
     <title>Spacewars</title>
 </head>
 <body>
-    <input class="codeInput" type="text">
-    <button class="btn btn-default">Join Room</button>
+    <section ng-controller="socketController">
+        <input class="codeInput" type="text" ng-model="roomId">
+        <input class="UserNameInput" type="text" ng-model="UserName">
+        <button class="btn btn-default" ng-click="joinRoom(UserName, roomId)">Join Room</button>
 
-    <button id="btnSettings" class="btn btn-default">Settings</button>
-    <button id="btnLeaveRoom" class="btn btn-danger">Leave room</button>
+        <button id="btnSettings" class="btn btn-default">Settings</button>
+        <button id="btnLeaveRoom" class="btn btn-danger">Leave room</button>
+    </section>
     <script src="js/app.min.js"/>
 </body>
 </html>
