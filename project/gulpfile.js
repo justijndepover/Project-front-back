@@ -22,7 +22,7 @@ var path = {
     MINIFIED_OUT: 'app.bundle.js',
     DEST_SRC: 'src',
     DEST_BUILD: 'build',
-    DEST: 'dist'
+    DEST: 'public'
 };
 
 gulp.task("default", function(){
