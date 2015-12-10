@@ -40,6 +40,7 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('gsmConnect',function(data,calback){
+        console.log(data.username + " connected to "+  data.room);
         if(data.room in rooms){
             socket.username = data.username;
             // store the room name in the socket session for this client
