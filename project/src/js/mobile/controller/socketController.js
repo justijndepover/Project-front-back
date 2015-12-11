@@ -16,7 +16,7 @@
             socketService.emit("gsmConnect", data);
         };
 
-        var leaveRoom = function(){
+        $scope.leaveRoom = function(){
             socketService.emit("gsmDisconnect", null);
         };
 
@@ -28,8 +28,6 @@
             socketService.emit("deviceOrientation", data)
         };
         return{
-
-            leaveRoom: leaveRoom,
             sendDeviceOrientation: sendDeviceOrientation
         }
     };
