@@ -6,10 +6,11 @@
     <link rel="stylesheet" href="css/style.min.css">
 </head>
 <body>
-    <section ng-controller="socketController">
-        <input class="codeInput" type="text" ng-model="roomId">
-        <input class="UserNameInput" type="text" ng-model="UserName">
-        <button class="btn btn-default" ng-click="joinRoom(UserName, roomId)">Join Room</button>
+    <section ng-controller="socketController" class="center">
+        <h1 class="Title">Space Wars</h1>
+        <input class="codeInput" type="text" ng-model="roomId" placeholder="Room Name">
+        <input class="UserNameInput" type="text" ng-model="UserName" placeholder="Username">
+        <button class="btn btn-join" ng-click="joinRoom(UserName, roomId)">Join Room</button>
 
         <button id="btnSettings" class="btn btn-default">Settings</button>
         <button id="btnLeaveRoom" class="btn btn-danger"  ng-click="leaveRoom()">Leave room</button>
