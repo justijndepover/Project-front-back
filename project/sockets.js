@@ -8,17 +8,20 @@ module.exports = function (io ) {
 
 // rooms which are currently available in chat
     var rooms = {};
-    rooms["hallo"]="hallo";
 
     var pcs = {};
 
     io.sockets.on('connection', function (socket) {
         socket.on('pcconnect',function(){
+            console.log("new room is made: "+socket.id);
             rooms[socket.id]=socket.id;
             // store the room name in the socket session for this client
             socket.room = socket.id;
             // join room
             socket.join(socket.id);
+            if (io.sockets.connected[socket.id]) {
+                io.sockets.connected[socket.id].emit('requestRoom', socket.id);
+            }
         });
 
         socket.on('gsmConnect',function(data,calback){

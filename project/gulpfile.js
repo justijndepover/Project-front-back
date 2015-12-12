@@ -30,7 +30,7 @@ gulp.task("css-mobile-build", function(){
             }))
         .pipe(sourcemaps.init())
         .pipe(cssMinifier())
-        .pipe(concat("app.min.css"))
+        .pipe(concat("style.min.css"))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest("./public/mobile/css"));
 });
@@ -45,7 +45,7 @@ gulp.task("css-desktop-build", function(){
             }))
         .pipe(sourcemaps.init())
         .pipe(cssMinifier())
-        .pipe(concat("app.min.css"))
+        .pipe(concat("style.min.css"))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest("./public/desktop/css"));
 });
@@ -64,7 +64,8 @@ gulp.task("js-mobile-build", function(){
 });
 
 gulp.task("js-desktop-build", function(){
-    gulp.src(["./src/js/desktop/**/*.js",
+    gulp.src(["./src/app.js",
+        "./src/js/desktop/**/*.js",
         "./src/js/shared/**/*.js"])
         //.pipe(jshint())
         //.pipe(jshint.reporter(jsstylish))

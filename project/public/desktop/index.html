@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
     <meta charset="UTF-8">
     <title>Spacewars</title>
-    <link rel="stylesheet" href="css/desktop.min.css">
+    <link rel="stylesheet" href="css/style.min.css">
 </head>
 <body>
+    <div ng-controller="socketController">
+        <p>Room: {{room}}</p>
+    </div>
     <canvas></canvas>
 
     <script src="../lib/angular/angular.js"></script>

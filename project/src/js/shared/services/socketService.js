@@ -32,7 +32,8 @@
         //public
         return{
             on: on,
-            emit: emit
+            emit: emit,
+            socket: socket
         }
     };
 

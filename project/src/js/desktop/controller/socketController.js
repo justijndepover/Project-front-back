@@ -7,14 +7,17 @@
 
         //private
 
-
         //functions
-        $scope.joinRoom = function(username, room){
-            var data = {};
-            data.username = username;
-            data.room = room;
-            socketService.emit("gsmConnect", data);
+        var makeRoom = function(){
+            socketService.emit("pcconnect", null);
         };
+        socketService.on('requestRoom',function(data){
+            $scope.room = data;
+        });
+        (function() {
+            makeRoom();
+        })();
+
     };
 
     angular.module("app").controller("socketController", ["$scope", "socketService", socketController]);
