@@ -1,0 +1,72 @@
+@font-face {
+  font-family: Kenvector;
+  src: url('../../assets/Bonus/kenvector_future.ttf');
+}
+//Variables
+@light-gray: #f1f1f1;
+@dark-gray: darken(@light-gray, 70%);
+@space-blue: #31b0d5;
+@orange: #ff9d1b;
+
+//CSS
+body{
+  background: url('../../assets/Backgrounds/blue.png');
+  font-size: 0.625em;
+}
+
+.btn{
+  //background: url('../../assets/PNG/UI/buttonBlue.png');
+  background: @light-gray;
+  border: solid 3px @space-blue;
+  color: @dark-gray;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+h1{
+  font-family: Kenvector;
+  color: white;
+  //text-shadow: -5px 0 @light-gray, 0 5px @light-gray, 5px 0 @light-gray, 0 -5px @light-gray;
+  display: block;
+  text-align: center;
+  font-size:12em;
+}
+
+h2{
+  font-family: Kenvector;
+  color: white;
+  display: block;
+  text-align: center;
+  font-size: 5em;
+}
+
+h3{
+  font-family: Kenvector;
+  color: @orange;
+  display: block;
+  text-align: center;
+  font-size: 3em;
+  margin-bottom: 30px;
+}
+
+ul{
+  list-style: none;
+  padding: 0;
+}
+
+.btn:focus{
+  outline: none;
+}
+
+.btn:hover{
+  background: darken(@light-gray, 10%);
+}
+
+.btn-start{
+  font-size: 2em;
+  font-family: Kenvector;
+  padding:20px 100px;
+  margin: 0 auto;
+  display: block;
+}
