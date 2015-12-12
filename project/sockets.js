@@ -34,8 +34,9 @@ module.exports = function (io ) {
                 socket.join(data.room);
                 // add the client's username to the global list
                 usernames[data.username] = data.username;
-
-                socket.to(data.room).emit('updateusers', usernames);
+                if (io.sockets.connected[socket.room]) {
+                    io.sockets.connected[socket.room].emit('updateusers', usernames);
+                }
                 calback(null,'user toegevoegt');
             }
             else{
@@ -43,28 +44,34 @@ module.exports = function (io ) {
             }
         });
 
-        socket.on('gsmDisconnect',function(msg){
+        var leaveRoom = function (){
             delete usernames[socket.username];
             socket.leave(socket.room);
-            socket.to(room).emit('updateusers', usernames);
+            if (io.sockets.connected[socket.room]) {
+                io.sockets.connected[socket.room].emit('updateusers', usernames);
+            }
+            console.log(socket.username + " has left "+  socket.room);
+        };
 
+        socket.on('gsmDisconnect',function(msg){
+            leaveRoom();
         });
 
         socket.on('deviceOrientation', function(msg){
             console.log("device connected");
-            io.emit('deviceOrientation', msg);
+            if (io.sockets.connected[socket.room]) {
+                msg.username=socket.username;
+                io.sockets.connected[socket.room].emit('deviceOrientation', msg);
+            }
         });
 
         // when the user disconnects.. perform this
         socket.on('disconnect', function(){
             if('username' in socket){
-                // remove the username from global usernames list
-                delete usernames[socket.username];
-
-                socket.leave(socket.room);
-                socket.to(socket.room).emit('updateusers', usernames);
+                leaveRoom();
             }else{
                 delete rooms[socket.room];
+
             }
         });
     });

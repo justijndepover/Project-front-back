@@ -8,7 +8,14 @@
 <body>
     <div ng-controller="socketController">
         <p>Room: {{room}}</p>
+        <div>
+            <h2>Users</h2>
+            <ul ng-repeat="(key, value) in usernames">
+                <li>{{value}}</li>
+            </ul>
+        </div>
     </div>
+
     <canvas></canvas>
 
     <script src="../lib/angular/angular.js"></script>
