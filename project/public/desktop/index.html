@@ -9,6 +9,7 @@
     <div ng-controller="socketController">
         <h1>Space Wars</h1>
         <h2>Room: </h2>
+        <qrcode data="hallo" size="200" version="4"></qrcode>
         <h3>{{room}}</h3>
         <div>
             <h2>Joined Users:</h2>
@@ -21,8 +22,11 @@
 
     <canvas></canvas>
 
+
     <script src="../lib/angular/angular.js"></script>
-    <script src="../lib/socket.io/socket.io.js"></script>
+    <script src="http://monospaced.github.io/bower-qrcode-generator/js/qrcode.js"></script>
+    <script src="http://monospaced.github.io/bower-qrcode-generator/js/qrcode_UTF8.js"></script>
     <script src="js/app.min.js"></script>
+    <script src="../lib/socket.io/socket.io.js"></script>
 </body>
 </html>

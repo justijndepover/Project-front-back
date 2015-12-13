@@ -18,7 +18,7 @@
 
         $scope.leaveRoom = function(){
             socketService.emit("gsmDisconnect", null);
-        }
+        };
 
         var sendDeviceOrientation = function(eventData){
             var data = {};

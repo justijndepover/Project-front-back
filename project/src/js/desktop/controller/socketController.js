@@ -33,5 +33,4 @@
     };
 
     angular.module("app").controller("socketController", ["$scope", "socketService", socketController]);
-
 })();
