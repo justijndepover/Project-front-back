@@ -3,6 +3,7 @@
   src: url('../../assets/Bonus/kenvector_future.ttf');
 }
 //Variables
+@fontFamily: Kenvector, sans-serif;
 @light-gray: #f1f1f1;
 @space-blue: #31b0d5;
 
@@ -10,18 +11,10 @@
 body{
   background: url('../../assets/Backgrounds/blue.png');
   font-size: 0.625em;
-}
-
-#btnSettings{
-  display: none;
-}
-
-#btnLeaveRoom{
-  display: none;
+  font-family:@fontFamily;
 }
 
 .Title{
-  font-family: Kenvector;
   color: white;
   //text-shadow: -5px 0 @light-gray, 0 5px @light-gray, 5px 0 @light-gray, 0 -5px @light-gray;
   display: block;
@@ -44,12 +37,12 @@ body{
   height: 100px;
   display: block;
   margin: 20px auto;
-  border: 0px;
+  border: 0;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
   padding: 0 30px;
-  font-family: Kenvector;
+  font-family: @fontFamily;
   font-size: 3em;
 }
 
@@ -62,13 +55,15 @@ body{
   border-radius: 5px;
   width: 40%;
   height: 50px;
-}
-
-.btn-join{
-  font-family: Kenvector;
-  margin: 20px auto;
-  height: 100px;
-  padding: 0 30px;
-  display: block;
-  font-size: 3em;
+  &.btn-join{
+    font-family: Kenvector, sans-serif;
+    margin: 20px auto;
+    height: 100px;
+    padding: 0 30px;
+    display: block;
+    font-size: 3em;
+  }
+  &#btnSettings,&#btnLeaveRoom{
+    display: none;
+  }
 }
