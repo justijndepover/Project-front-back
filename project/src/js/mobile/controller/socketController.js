@@ -12,7 +12,7 @@
         $scope.joinRoom = function(username, room){
             var data = {};
             data.username = username;
-            data.room = room;
+            data.room = room.toUpperCase();
             socketService.emit("gsmConnect", data);
         };
 

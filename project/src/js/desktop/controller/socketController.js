@@ -23,9 +23,17 @@
             deviceOrientation.alpha = data.alpha;
         });
         $scope.usernames = {};
+        $scope.checkUserCount = true;
         socketService.on('updateusers', function (data) {
             $scope.usernames = data;
+            if(Object.keys($scope.usernames).length < 4){
+                $scope.checkUserCount = true;
+            }else{
+                $scope.checkUserCount = false;
+            }
         });
+
+
         (function() {
             makeRoom();
         })();

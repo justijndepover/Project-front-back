@@ -11,20 +11,43 @@ module.exports = function (io ) {
 
     var pcs = {};
 
+    function makeid()
+    {
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        for( var i=0; i < 5; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    }
+
+    function addRoom(socket){
+        var roomId = makeid();
+        if(rooms.hasOwnProperty(roomId)){
+            addRoom();
+        }else{
+            rooms[roomId] = socket.id;
+        }
+        socket.room = roomId;
+    }
+
     io.sockets.on('connection', function (socket) {
         socket.on('pcconnect',function(){
             console.log("new room is made: "+socket.id);
-            rooms[socket.id]=socket.id;
+            //rooms[roomId]=socket.id;
+            addRoom(socket);
+            console.log(rooms);
             // store the room name in the socket session for this client
-            socket.room = socket.id;
+
             // join room
             socket.join(socket.id);
             if (io.sockets.connected[socket.id]) {
-                io.sockets.connected[socket.id].emit('requestRoom', socket.id);
+                io.sockets.connected[socket.id].emit('requestRoom', socket.room);
             }
         });
 
-        socket.on('gsmConnect',function(data,calback){
+        socket.on('gsmConnect',function(data){
             console.log(data.username + " connected to "+  data.room);
             if(data.room in rooms){
                 socket.username = data.username;
@@ -34,13 +57,10 @@ module.exports = function (io ) {
                 socket.join(data.room);
                 // add the client's username to the global list
                 usernames[data.username] = data.username;
-                if (io.sockets.connected[socket.room]) {
-                    io.sockets.connected[socket.room].emit('updateusers', usernames);
+                console.log("gsm connect: " + rooms[socket.room]);
+                if (io.sockets.connected[rooms[socket.room]]) {
+                    io.sockets.connected[rooms[socket.room]].emit('updateusers', usernames);
                 }
-                calback(null,'user toegevoegt');
-            }
-            else{
-                calback('error', 'room bestaat niet');
             }
         });
 
