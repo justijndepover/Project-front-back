@@ -4,7 +4,7 @@
 
 module.exports = function (io ) {
     // usernames which are currently connected to the chat
-    var usernames = {};
+   // var usernames = {};
 
 // rooms which are currently available in chat
     var rooms = {};
@@ -27,7 +27,7 @@ module.exports = function (io ) {
         if(rooms.hasOwnProperty(roomId)){
             addRoom();
         }else{
-            rooms[roomId] = socket.id;
+            rooms[roomId] = {usernames:{},room:socket.id};
         }
         socket.room = roomId;
     }
@@ -41,36 +41,39 @@ module.exports = function (io ) {
             // store the room name in the socket session for this client
 
             // join room
-            socket.join(socket.id);
+            //socket.join(socket.id);
             if (io.sockets.connected[socket.id]) {
                 io.sockets.connected[socket.id].emit('requestRoom', socket.room);
             }
         });
 
         socket.on('gsmConnect',function(data){
-            console.log(data.username + " connected to "+  data.room);
             if(data.room in rooms){
+                console.log(data.username + " connected to "+  data.room);
                 socket.username = data.username;
                 // store the room name in the socket session for this client
                 socket.room = data.room;
                 // join room
                 socket.join(data.room);
                 // add the client's username to the global list
-                usernames[data.username] = data.username;
-                console.log("gsm connect: " + rooms[socket.room]);
-                if (io.sockets.connected[rooms[socket.room]]) {
-                    io.sockets.connected[rooms[socket.room]].emit('updateusers', usernames);
+                rooms[data.room].usernames[data.username] = data.username;
+                console.log(rooms);
+                console.log("gsm connect: " + rooms[socket.room].room);
+                if (io.sockets.connected[rooms[socket.room].room]) {
+                    io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[data.room].usernames);
                 }
             }
         });
 
         var leaveRoom = function (){
-            delete usernames[socket.username];
-            socket.leave(socket.room);
-            if (io.sockets.connected[socket.room]) {
-                io.sockets.connected[socket.room].emit('updateusers', usernames);
+            if(socket.room in rooms){
+                delete rooms[socket.room].usernames[socket.username];
+                socket.leave(socket.room);
+                if (io.sockets.connected[socket.room]) {
+                    io.sockets.connected[socket.room].emit('updateusers', rooms[socket.room].usernames);
+                }
+                console.log(socket.username + " has left "+  socket.room);
             }
-            console.log(socket.username + " has left "+  socket.room);
         };
 
         socket.on('gsmDisconnect',function(msg){
@@ -90,9 +93,19 @@ module.exports = function (io ) {
             if('username' in socket){
                 leaveRoom();
             }else{
+                socket.to(socket.room).emit("roomDisconnect",null);
                 delete rooms[socket.room];
-
             }
+        });
+
+        socket.on("startGame", function (data) {
+            console.log(socket.room);
+            // emit naar room
+            socket.to(socket.room).emit("startGame",null);
+        });
+
+        socket.on("pauseGame", function (data) {
+
         });
     });
 };

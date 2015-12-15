@@ -9,6 +9,13 @@
 
 
         //functions
+        socketService.on("startGame", function (data) {
+            console.log("start game");
+        });
+        socketService.on("roomDisconnect", function (data) {
+
+        });
+        
         $scope.joinRoom = function(username, room){
             var data = {};
             data.username = username;
