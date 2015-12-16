@@ -17,7 +17,7 @@
     <section ng-controller="playController" class="playSection" ng-show="PCShow()">
         <p ng-hide="startGame">{{text}}</p>
         <div ng-show="startGame">
-            <button  ng-click="shoot()">press to shoot</button>
+            <div class="btnShoot" ng-click="shoot()">press to shoot</div>
             <button id="btnSettings" class="btn btn-default">Settings</button>
             <button id="btnLeaveRoom" class="btn btn-danger"  ng-click="leaveRoom()">Leave room</button>
         </div>
