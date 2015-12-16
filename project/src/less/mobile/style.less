@@ -1,10 +1,11 @@
 @font-face {
-  font-family: Kenvector;
-  src: url('../../assets/Bonus/kenvector_future.ttf');
+  font-family: SpyAgency;
+  src: url('../../assets/spyagencyv3.ttf');
 }
 //Variables
-@fontFamily: Kenvector, sans-serif;
+@fontFamily: SpyAgency, sans-serif;
 @light-gray: #f1f1f1;
+@dark-gray: darken(@light-gray, 70%);
 @space-blue: #31b0d5;
 
 //CSS
@@ -50,20 +51,18 @@ body{
   //background: url('../../assets/PNG/UI/buttonBlue.png');
   background: @light-gray;
   border: solid 3px @space-blue;
+  color: @dark-gray;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
   width: 40%;
   height: 50px;
   &.btn-join{
-    font-family: Kenvector, sans-serif;
+    font-family: @fontFamily;
     margin: 20px auto;
     height: 100px;
     padding: 0 30px;
     display: block;
     font-size: 3em;
-  }
-  &#btnSettings,&#btnLeaveRoom{
-    display: none;
   }
 }

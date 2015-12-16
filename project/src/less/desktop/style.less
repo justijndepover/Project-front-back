@@ -1,10 +1,10 @@
 @font-face {
-  font-family: Kenvector;
+  font-family: SpyAgency;
   src: url('../../assets/spyagencyv3.ttf');
 }
 
 //Variables
-@fontFamily: Kenvector, sans-serif;
+@fontFamily: SpyAgency, sans-serif;
 @light-gray: #f1f1f1;
 @dark-gray: darken(@light-gray, 70%);
 @space-blue: #31b0d5;
@@ -32,7 +32,8 @@ body{
     background: darken(@light-gray, 10%);
   }
   &:disabled{
-    background: red;
+    background: darken(@light-gray, 40%);
+    border:solid 3px darken(@space-blue, 20%);
   }
 }
 

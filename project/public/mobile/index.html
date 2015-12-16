@@ -6,12 +6,19 @@
     <link rel="stylesheet" href="css/style.min.css">
 </head>
 <body>
-    <section ng-controller="socketController" class="center">
+    <section class="loginSection center" ng-controller="loginController" ng-show="LCShow">
         <h1 class="Title">Space Wars</h1>
         <input class="codeInput" type="text" ng-model="roomId" placeholder="Room Name">
         <input class="UserNameInput" type="text" ng-model="UserName" placeholder="Username">
         <button class="btn btn-join" ng-click="joinRoom(UserName, roomId)">Join Room</button>
+    </section>
 
+    <section class="displayTextSection">
+        <p>{{text}}</p>
+    </section>
+
+    <section ng-controller="playController" class="playSection" ng-show="PCShow">
+        <button  ng-click="shoot()">press to shoot</button>
         <button id="btnSettings" class="btn btn-default">Settings</button>
         <button id="btnLeaveRoom" class="btn btn-danger"  ng-click="leaveRoom()">Leave room</button>
     </section>
