@@ -3,7 +3,7 @@
  */
 
 (function(){
-    var socketController = function($scope, socketService){
+    var socketController = function($scope, $rootScope, socketService, eventService){
 
         //private
 
@@ -31,14 +31,18 @@
             var data = {};
             data.gamma = eventData.gamma;
             data.beta = eventData.beta;
-            data.delta = eventData.delta;
+            data.alpha = eventData.alpha;
             socketService.emit("deviceOrientation", data)
         };
+        eventService.subscribeMe();
+        $rootScope.$on('app.deviceorientationEvent', function(a, b) {
+            sendDeviceOrientation(b);
+        });
         return{
             sendDeviceOrientation: sendDeviceOrientation
         }
     };
 
-    angular.module("app").controller("socketController", ["$scope", "socketService", socketController]);
+    angular.module("app").controller("socketController", ["$scope", "$rootScope", "socketService", "eventService", socketController]);
 
 })();

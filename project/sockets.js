@@ -81,10 +81,9 @@ module.exports = function (io ) {
         });
 
         socket.on('deviceOrientation', function(msg){
-            console.log("device connected");
-            if (io.sockets.connected[socket.room]) {
+            if (io.sockets.connected[rooms[socket.room].room]) {
                 msg.username=socket.username;
-                io.sockets.connected[socket.room].emit('deviceOrientation', msg);
+                io.sockets.connected[rooms[socket.room].room].emit('deviceOrientation', msg);
             }
         });
 
