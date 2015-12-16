@@ -51,18 +51,23 @@ module.exports = function (io ) {
             var message;
             if(data.room in rooms) {
                 if (Object.keys(rooms[data.room].usernames).length < 4 && rooms[data.room].canJoin == true){
-                    console.log(data.username + " connected to " + data.room);
-                    socket.username = data.username;
-                    // store the room name in the socket session for this client
-                    socket.room = data.room;
-                    // join room
-                    socket.join(data.room);
-                    // add the client's username to the global list
-                    rooms[data.room].usernames[data.username] = data.username;
-                    console.log(rooms);
-                    message = "connectionEstablished";
-                    if (io.sockets.connected[rooms[socket.room].room]) {
-                        io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[data.room].usernames);
+                    if(!(data.username in rooms[data.room].usernames)) {
+                        console.log(data.username + " connected to " + data.room);
+                        socket.username = data.username;
+                        // store the room name in the socket session for this client
+                        socket.room = data.room;
+                        // join room
+                        socket.join(data.room);
+                        // add the client's username to the global list
+                        rooms[data.room].usernames[data.username] = data.username;
+                        console.log(rooms);
+                        message = "connectionEstablished";
+                        if (io.sockets.connected[rooms[socket.room].room]) {
+                            io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[data.room].usernames);
+                        }
+                    }
+                    else{
+                        message = "usernameExist";
                     }
                 }
                 else {
@@ -77,12 +82,14 @@ module.exports = function (io ) {
 
         var leaveRoom = function (){
             if(socket.room in rooms){
-                delete rooms[socket.room].usernames[socket.username];
-                socket.leave(socket.room);
-                if (io.sockets.connected[rooms[socket.room].room]) {
-                    io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[socket.room].usernames);
+                if(socket.username in rooms[socket.room].usernames) {
+                    delete rooms[socket.room].usernames[socket.username];
+                    socket.leave(socket.room);
+                    if (io.sockets.connected[rooms[socket.room].room]) {
+                        io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[socket.room].usernames);
+                    }
+                    console.log(socket.username + " has left " + socket.room);
                 }
-                console.log(socket.username + " has left "+  socket.room);
             }
         };
 

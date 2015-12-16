@@ -25,12 +25,22 @@
 
         socketService.on("message", function(message){
             console.log("connectie");
-            if(message == "connectionEstablished"){
-                displayService.setPCShow(true);
-                displayService.setLCShow(false);
-            }
-            else if(message == "connectionRefused"){
-                $scope.text = "Something went wrong";
+            switch( message){
+                case "connectionEstablished":
+                    displayService.setPCShow(true);
+                    displayService.setLCShow(false);
+                    break;
+                case "connectionRefused":
+                    $scope.text = "Something went wrong";
+                    break;
+                case "usernameExist":
+                    $scope.text = "Username already exist";
+                    break;
+                case "roomFull" :
+                    $scope.text = "Room is already full.";
+                    break;
+                default :
+                    break;
             }
         });
     };
