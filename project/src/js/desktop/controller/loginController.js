@@ -3,9 +3,9 @@
  */
 
 (function(){
-    var socketController = function($scope, socketService){
+    var loginController = function($scope, socketService, displayService){
 
-        //private
+        $scope.LCShow = displayService.getLCShow;
 
         //functions
         var makeRoom = function(){
@@ -31,6 +31,8 @@
 
         $scope.startGame= function () {
             socketService.emit("startGame", null);
+            displayService.setLCShow(false);
+            displayService.setPCShow(true);
         };
 
 
@@ -40,5 +42,5 @@
 
     };
 
-    angular.module("app").controller("socketController", ["$scope", "socketService", socketController]);
+    angular.module("app").controller("loginController", ["$scope", "socketService" , "displayService", loginController]);
 })();

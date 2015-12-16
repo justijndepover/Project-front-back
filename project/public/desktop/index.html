@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="css/style.min.css">
 </head>
 <body>
-    <div ng-controller="socketController">
+    <section ng-controller="loginController" ng-show="LCShow()">
         <h1>Space Wars</h1>
         <h2>Room: </h2>
         <h3>{{room}}</h3>
@@ -17,9 +17,13 @@
             </ul>
         </div>
         <button class="btn btn-start" ng-disabled="checkUserCount" ng-click="startGame()">Start Game</button>
-    </div>
+    </section>
+    <section ng-controller="playController" ng-show="PCShow()">
 
-    <canvas></canvas>
+        <div class="playArea"></div>
+    </section>
+
+
 
 
     <script src="../lib/angular/angular.js"></script>

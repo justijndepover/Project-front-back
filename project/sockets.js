@@ -27,7 +27,7 @@ module.exports = function (io ) {
         if(rooms.hasOwnProperty(roomId)){
             addRoom();
         }else{
-            rooms[roomId] = {usernames:{},room:socket.id};
+            rooms[roomId] = {usernames:{},room:socket.id, canJoin:true};
         }
         socket.room = roomId;
     }
@@ -49,22 +49,27 @@ module.exports = function (io ) {
 
         socket.on('gsmConnect',function(data){
             var message;
-            if(data.room in rooms){
-                console.log(data.username + " connected to "+  data.room);
-                socket.username = data.username;
-                // store the room name in the socket session for this client
-                socket.room = data.room;
-                // join room
-                socket.join(data.room);
-                // add the client's username to the global list
-                rooms[data.room].usernames[data.username] = data.username;
-                console.log(rooms);
-                console.log("gsm connect: " + rooms[socket.room].room);
-                message = "connectionEstablished";
-                if (io.sockets.connected[rooms[socket.room].room]) {
-                    io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[data.room].usernames);
+            if(data.room in rooms) {
+                if (Object.keys(rooms[data.room].usernames).length < 4 && rooms[data.room].canJoin == true){
+                    console.log(data.username + " connected to " + data.room);
+                    socket.username = data.username;
+                    // store the room name in the socket session for this client
+                    socket.room = data.room;
+                    // join room
+                    socket.join(data.room);
+                    // add the client's username to the global list
+                    rooms[data.room].usernames[data.username] = data.username;
+                    console.log(rooms);
+                    console.log("gsm connect: " + rooms[socket.room].room);
+                    message = "connectionEstablished";
+                    if (io.sockets.connected[rooms[socket.room].room]) {
+                        io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[data.room].usernames);
+                    }
                 }
-            }else{
+                else {
+                    message = "roomFull";
+                }
+            }else {
                 message = "connectionRefused";
             }
             console.log(message);
@@ -75,8 +80,8 @@ module.exports = function (io ) {
             if(socket.room in rooms){
                 delete rooms[socket.room].usernames[socket.username];
                 socket.leave(socket.room);
-                if (io.sockets.connected[socket.room]) {
-                    io.sockets.connected[socket.room].emit('updateusers', rooms[socket.room].usernames);
+                if (io.sockets.connected[rooms[socket.room]]) {
+                    io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[socket.room].usernames);
                 }
                 console.log(socket.username + " has left "+  socket.room);
             }
@@ -107,6 +112,7 @@ module.exports = function (io ) {
             console.log(socket.room);
             // emit naar room
             socket.to(socket.room).emit("message","startGame");
+            rooms[data.room].canJoin = false;
         });
 
         socket.on("pauseGame", function (data) {
