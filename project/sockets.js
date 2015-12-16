@@ -48,6 +48,7 @@ module.exports = function (io ) {
         });
 
         socket.on('gsmConnect',function(data){
+            var message;
             if(data.room in rooms){
                 console.log(data.username + " connected to "+  data.room);
                 socket.username = data.username;
@@ -59,10 +60,15 @@ module.exports = function (io ) {
                 rooms[data.room].usernames[data.username] = data.username;
                 console.log(rooms);
                 console.log("gsm connect: " + rooms[socket.room].room);
+                message = "connectionEstablished";
                 if (io.sockets.connected[rooms[socket.room].room]) {
                     io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[data.room].usernames);
                 }
+            }else{
+                message = "connectionRefused";
             }
+            console.log(message);
+            socket.emit("message", message);
         });
 
         var leaveRoom = function (){
@@ -81,7 +87,7 @@ module.exports = function (io ) {
         });
 
         socket.on('deviceOrientation', function(msg){
-            if (io.sockets.connected[rooms[socket.room].room]) {
+            if (io.sockets.connected[rooms[socket.room]]) {
                 msg.username=socket.username;
                 io.sockets.connected[rooms[socket.room].room].emit('deviceOrientation', msg);
             }
@@ -100,7 +106,7 @@ module.exports = function (io ) {
         socket.on("startGame", function (data) {
             console.log(socket.room);
             // emit naar room
-            socket.to(socket.room).emit("startGame",null);
+            socket.to(socket.room).emit("message","startGame");
         });
 
         socket.on("pauseGame", function (data) {

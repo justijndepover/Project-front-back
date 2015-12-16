@@ -5,8 +5,8 @@
 
 (function(){
 
-    var loginController = function($scope, socketService){
-        $scope.LCShow = true;
+    var loginController = function($scope, socketService, displayService){
+        $scope.LCShow = displayService.getLCShow;
         //functions
         socketService.on("startGame", function (data) {
             console.log("start game");
@@ -19,13 +19,21 @@
             var data = {};
             data.username = username;
             data.room = room.toUpperCase();
-            console.log("join room");
-            $scope.LCShow = false;
-            $scope.PCShow = true;
             socketService.emit("gsmConnect", data);
 
         };
+
+        socketService.on("message", function(message){
+            console.log("connectie");
+            if(message == "connectionEstablished"){
+                displayService.setPCShow(true);
+                displayService.setLCShow(false);
+            }
+            else if(message == "connectionRefused"){
+                $scope.text = "Something went wrong";
+            }
+        });
     };
 
-    angular.module("app").controller("loginController", ["$scope", "socketService", loginController]);
+    angular.module("app").controller("loginController", ["$scope", "socketService", "displayService", loginController]);
 })();

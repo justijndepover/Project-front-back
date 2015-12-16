@@ -5,9 +5,9 @@
 
 (function(){
     "use strict";
-    var playController = function($scope, $rootScope, socketService, eventService){
-        $scope.PCShow = false;
-
+    var playController = function($scope, $rootScope, socketService, eventService, displayService){
+        $scope.PCShow = displayService.getPCShow;
+        $scope.startGame = false;
         $scope.shoot = function(){
 
         };
@@ -26,8 +26,19 @@
 
         $scope.leaveRoom = function(){
             socketService.emit("gsmDisconnect", null);
+            displayService.setLCShow(true);
+            displayService.setPCShow(false);
         };
+
+        socketService.on("message", function(message){
+            if(message == "connectionEstablished"){
+                $scope.text = "Waiting on other players";
+                $scope.startGame = false;
+            }else if(message == "startGame"){
+                $scope.startGame = true;
+            }
+        });
     };
 
-    angular.module("app").controller("playController", ["$scope", "$rootScope", "socketService", "eventService", playController])
+    angular.module("app").controller("playController", ["$scope", "$rootScope", "socketService", "eventService", "displayService", playController])
 })();
