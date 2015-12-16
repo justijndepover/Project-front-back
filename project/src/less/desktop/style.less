@@ -5,10 +5,11 @@
 
 //Variables
 @fontFamily: SpyAgency, sans-serif;
-@light-gray: #f1f1f1;
-@dark-gray: darken(@light-gray, 70%);
-@space-blue: #31b0d5;
-@orange: #ff9d1b;
+@color-accent: #f1f1f1;
+@color-accent-dark: darken(@color-accent, 70%);
+@color-primary: #31b0d5;
+@color-danger: #dd231e;
+@color-info: #ff9d1b;
 @screenwidth: window.screen.availWidth;
 @screenheight: window.screen.availHeight;
 
@@ -21,9 +22,9 @@ body{
 
 .btn{
   //background: url('../../assets/PNG/UI/buttonBlue.png');
-  background: @light-gray;
-  border: solid 3px @space-blue;
-  color: @dark-gray;
+  background: @color-accent;
+  border: solid 3px @color-primary;
+  color: @color-accent-dark;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -31,11 +32,11 @@ body{
     outline: none;
   }
   &:hover{
-    background: darken(@light-gray, 10%);
+    background: darken(@color-accent, 10%);
   }
   &:disabled{
-    background: darken(@light-gray, 40%);
-    border:solid 3px darken(@space-blue, 20%);
+    background: darken(@color-accent, 40%);
+    border:solid 3px darken(@color-primary, 20%);
   }
 }
 
@@ -51,7 +52,7 @@ h2{
   font-size: 5em;
 }
 h3{
-  color: @orange;
+  color: @color-info;
   font-size: 3em;
   margin-bottom: 30px;
 }

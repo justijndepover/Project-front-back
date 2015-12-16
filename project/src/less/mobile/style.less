@@ -4,9 +4,11 @@
 }
 //Variables
 @fontFamily: SpyAgency, sans-serif;
-@light-gray: #f1f1f1;
-@dark-gray: darken(@light-gray, 70%);
-@space-blue: #31b0d5;
+@color-accent: #f1f1f1;
+@color-accent-dark: darken(@color-accent, 70%);
+@color-primary: #31b0d5;
+@color-danger: #dd231e;
+@color-info: #ff9d1b;
 
 //CSS
 body{
@@ -17,7 +19,6 @@ body{
 
 .Title{
   color: white;
-  //text-shadow: -5px 0 @light-gray, 0 5px @light-gray, 5px 0 @light-gray, 0 -5px @light-gray;
   display: block;
   text-align: center;
   font-size:12em;
@@ -48,10 +49,9 @@ body{
 }
 
 .btn{
-  //background: url('../../assets/PNG/UI/buttonBlue.png');
-  background: @light-gray;
-  border: solid 3px @space-blue;
-  color: @dark-gray;
+  background: @color-accent;
+  border: solid 3px @color-primary;
+  color: @color-accent-dark;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -64,5 +64,25 @@ body{
     padding: 0 30px;
     display: block;
     font-size: 3em;
+  }
+}
+
+.loginSection{
+  p{
+    font-size: 3em;
+    text-align: center;
+    color: @color-danger;
+  }
+}
+
+.playSection{
+  p{
+    font-size: 3em;
+    text-align: center;
+    color: @color-info;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }
