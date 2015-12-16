@@ -9,6 +9,8 @@
 @dark-gray: darken(@light-gray, 70%);
 @space-blue: #31b0d5;
 @orange: #ff9d1b;
+@screenwidth: window.screen.availWidth;
+@screenheight: window.screen.availHeight;
 
 //CSS
 body{
@@ -65,4 +67,12 @@ ul{
   padding:20px 100px;
   margin: 0 auto;
   display: block;
+}
+
+//Actual Game
+
+.playArea{
+  width: @screenwidth;
+  height: @screenheight;
+  background: url('../../assets/Backgrounds/purple.png');
 }
