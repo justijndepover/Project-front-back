@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Spacewars</title>
     <link rel="stylesheet" href="css/style.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
 </head>
 <body>
     <section class="loginSection center" ng-controller="loginController" ng-show="LCShow()">
@@ -17,7 +18,7 @@
     <section ng-controller="playController" class="playSection" ng-show="PCShow()">
         <p ng-hide="startGame">{{text}}</p>
         <div ng-show="startGame">
-            <div class="btnShoot" ng-click="shoot()">press to shoot</div>
+            <div class="btnShoot" ng-click="shoot()"><p>press to shoot</p></div>
             <button id="btnSettings" class="btn btn-default">Settings</button>
             <button id="btnLeaveRoom" class="btn btn-danger"  ng-click="leaveRoom()">Leave room</button>
         </div>
