@@ -8,10 +8,11 @@
 
 (function(){
     "use strict";
-    var playController = function($scope, socketService, displayService){
+    var playController = function($scope, $window, socketService, displayService){
         $scope.PCShow = displayService.getPCShow;
         $scope.startGame = false;
+
     };
 
-    angular.module("app").controller("playController", ["$scope", "socketService", "displayService", playController])
+    angular.module("app").controller("playController", ["$scope", "$window", "socketService", "displayService", playController])
 })();
