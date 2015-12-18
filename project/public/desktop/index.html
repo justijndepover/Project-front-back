@@ -13,7 +13,7 @@
         <div>
             <h2>Joined Users:</h2>
             <ul ng-repeat="(key, value) in usernames">
-                <li><h3>{{value}}</h3></li>
+                <li><h3>{{value.username}}</h3></li>
             </ul>
         </div>
         <button class="btn btn-start" ng-disabled="checkUserCount" ng-click="startGame()">Start Game</button>

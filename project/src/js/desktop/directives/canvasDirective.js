@@ -18,7 +18,6 @@
             }
 
             angular.element($window).bind('resize', function(){
-                console.log("resize");
                 if($window.innerWidth < $window.innerHeight){
                     scope.width = $window.innerWidth - 20;
                 }else{

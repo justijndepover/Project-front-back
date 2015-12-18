@@ -3,7 +3,7 @@
  */
 
 (function(){
-    var loginController = function($scope, socketService, displayService){
+    var loginController = function($scope, socketService, displayService, playerService){
 
         $scope.LCShow = displayService.getLCShow;
 
@@ -25,6 +25,7 @@
         $scope.usernames = {};
         $scope.checkUserCount = false;
         socketService.on('updateusers', function (data) {
+            playerService.setPlayers(data);
             $scope.usernames = data;
             $scope.checkUserCount = Object.keys($scope.usernames).length < 0;
         });
@@ -42,5 +43,5 @@
 
     };
 
-    angular.module("app").controller("loginController", ["$scope", "socketService" , "displayService", loginController]);
+    angular.module("app").controller("loginController", ["$scope", "socketService" , "displayService", "playerService", loginController]);
 })();

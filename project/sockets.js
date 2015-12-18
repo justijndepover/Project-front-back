@@ -1,6 +1,8 @@
 /**
  * Created by Michiel on 10/12/2015.
  */
+//var room = require('./models/room.js');
+//var player = require('./models/player.js');
 
 module.exports = function (io ) {
     // usernames which are currently connected to the chat
@@ -59,7 +61,8 @@ module.exports = function (io ) {
                         // join room
                         socket.join(data.room);
                         // add the client's username to the global list
-                        rooms[data.room].usernames[data.username] = data.username;
+                        rooms[data.room].usernames[data.username] = {username:data.username, posX:10, posY:10, rotation:0};
+                        console.log(rooms[data.room].usernames[data.username]);
                         console.log(rooms);
                         message = "connectionEstablished";
                         if (io.sockets.connected[rooms[socket.room].room]) {
@@ -118,6 +121,7 @@ module.exports = function (io ) {
         socket.on("startGame", function (data) {
             // emit naar room
             socket.to(socket.room).emit("message","startGame");
+            socket.emit("gameCycle", null);
             rooms[socket.room].canJoin = false;
         });
 
