@@ -7,7 +7,7 @@
             restrict: 'E',
             link:link,
             replace:true,
-            template:'<canvas class="playArea" width="{{width}}" height="{{width}}" />'
+            template:'<canvas id="game" class="playArea" width="{{width}}" height="{{width}}" />'
         };
 
         function link(scope, element, attrs){

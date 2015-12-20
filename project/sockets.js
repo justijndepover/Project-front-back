@@ -13,6 +13,8 @@ module.exports = function (io ) {
 
     var pcs = {};
 
+    var colors = ["blue", "green", "orange", "red"];
+
     function makeid()
     {
         var text = "";
@@ -52,7 +54,8 @@ module.exports = function (io ) {
         socket.on('gsmConnect',function(data){
             var message;
             if(data.room in rooms) {
-                if (Object.keys(rooms[data.room].usernames).length < 4 && rooms[data.room].canJoin == true){
+                var userLength = Object.keys(rooms[data.room].usernames).length;
+                if (userLength < 4 && rooms[data.room].canJoin == true){
                     if(!(data.username in rooms[data.room].usernames)) {
                         console.log(data.username + " connected to " + data.room);
                         socket.username = data.username;
@@ -61,7 +64,15 @@ module.exports = function (io ) {
                         // join room
                         socket.join(data.room);
                         // add the client's username to the global list
-                        rooms[data.room].usernames[data.username] = {username:data.username, posX:10, posY:10, rotation:0};
+                        console.log(userLength);
+                        console.log(colors);
+                        rooms[data.room].usernames[data.username] = {
+                            username:data.username,
+                            posX: Math.floor(Math.random() * 100),
+                            posY: Math.floor(Math.random() * 100),
+                            rotation: Math.floor(Math.random() * 360),
+                            color: colors[userLength]
+                        };
                         console.log(rooms[data.room].usernames[data.username]);
                         console.log(rooms);
                         message = "connectionEstablished";
