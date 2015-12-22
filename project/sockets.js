@@ -113,11 +113,25 @@ module.exports = function (io ) {
         });
 
         socket.on('deviceOrientation', function(msg){
-            if (io.sockets.connected[rooms[socket.room]]) {
-                msg.username=socket.username;
-                io.sockets.connected[rooms[socket.room].room].emit('deviceOrientation', msg);
+            if (rooms[socket.room]) {
+                if(io.sockets.connected[rooms[socket.room].room]){
+                    var data = {};
+                    data.username = socket.username;
+                    data.orientation = msg.beta;
+                    io.sockets.connected[rooms[socket.room].room].emit('updateGameData', data);
+                }
             }
         });
+
+        socket.on('playerShot', function(data){
+            if (rooms[socket.room]) {
+                if(io.sockets.connected[rooms[socket.room].room]){
+                    var data2 = {};
+                    data2.username = socket.username;
+                    io.sockets.connected[rooms[socket.room].room].emit('playerShot', data2);
+                }
+            }
+        })
 
         //user closes window
         socket.on('disconnect', function(){
@@ -132,7 +146,7 @@ module.exports = function (io ) {
         socket.on("startGame", function (data) {
             // emit naar room
             socket.to(socket.room).emit("message","startGame");
-            socket.emit("gameCycle", null);
+            socket.emit("initGame", null);
             rooms[socket.room].canJoin = false;
         });
 

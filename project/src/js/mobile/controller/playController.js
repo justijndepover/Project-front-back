@@ -9,14 +9,14 @@
         $scope.PCShow = displayService.getPCShow;
         $scope.startGame = false;
         $scope.shoot = function(){
-
+            socketService.emit("playerShot", null);
         };
 
         var sendDeviceOrientation = function(eventData){
             var data = {};
-            data.gamma = eventData.gamma;
+            //data.gamma = eventData.gamma;
             data.beta = eventData.beta;
-            data.alpha = eventData.alpha;
+            //data.alpha = eventData.alpha;
             socketService.emit("deviceOrientation", data)
         };
         eventService.subscribeMe();
