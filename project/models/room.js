@@ -48,7 +48,7 @@ room.prototype.checkUser = function(username){
         }
     }
     return false;
-}
+};
 
 room.allRooms = [];
 
@@ -61,15 +61,14 @@ Array.prototype.hasRoomInArray = function(roomId){
             hasRoom = true;
         }
     }
-
     return hasRoom;
 };
 
-Array.prototype.selectRoom = function(socketId){
+Array.prototype.selectRoomId = function(socketId){
     var e = null;
     for(var tempRoom in room.allRooms){
         if(room.allRooms[tempRoom].socketId == socketId){
-            e = tempRoom;
+            e = room.allRooms[tempRoom].roomId;
         }
     }
     return e;

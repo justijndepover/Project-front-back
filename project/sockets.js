@@ -9,12 +9,16 @@ module.exports = function (io) {
 
     io.sockets.on('connection', function (socket) {
         socket.on('pcconnect',function(){
-            console.log("new room is made: "+socket.id);
             var temp = new room(socket.id);
             room.allRooms[temp.roomId] = temp;
+            console.log("------------------------------------");
+            console.log("new room is made: "+temp.roomId + ", with socketId: " + temp.socketId);
+            console.log("++++++++++++++++++++++++++++++++++++");
+            console.log("list with available rooms: ");
             console.log(room.allRooms);
+            console.log("------------------------------------");
             if (io.sockets.connected[socket.id]) {
-                io.sockets.connected[socket.id].emit('requestRoom', room.allRooms.selectRoom(socket.id));
+                io.sockets.connected[socket.id].emit('requestRoom', room.allRooms.selectRoomId(socket.id));
             }
         });
 
@@ -95,20 +99,22 @@ module.exports = function (io) {
         });
 
         socket.on('disconnect', function(){
-            var selectedRoom = room.allRooms.selectRoom(socket.id);
-            if('username' in socket){
-                leaveRoom();
-            }else{
-                socket.to(selectedRoom.socketId).emit("roomDisconnect",null);
-                delete room.allRooms[selectedRoom.roomId];
+            var selectedRoomId = room.allRooms.selectRoomId(socket.id);
+            if(selectedRoomId != undefined){
+                if('username' in socket){
+                    leaveRoom();
+                }else{
+                    socket.to(room.allRooms[selectedRoomId].socketId).emit("roomDisconnect",null);
+                    delete room.allRooms[selectedRoomId];
+                }
             }
         });
 
         socket.on("startGame", function (data) {
-            var selectedRoom = room.allRooms.selectRoom(socket.id);
-            socket.to(selectedRoom.socketId).emit("message","startGame");
+            var selectedRoomId = room.allRooms.selectRoomId(socket.id);
+            socket.to(room.allRooms[selectedRoomId].socketId).emit("message","startGame");
             socket.emit("initGame", null);
-            selectedRoom.canJoin = false;
+            room.allRooms[selectedRoomId].canJoin = false;
         });
 
         socket.on("pauseGame", function (data) {
