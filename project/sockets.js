@@ -1,83 +1,42 @@
 /**
  * Created by Michiel on 10/12/2015.
  */
-//var room = require('./models/room.js');
-//var player = require('./models/player.js');
 
-module.exports = function (io ) {
-    // usernames which are currently connected to the chat
-   // var usernames = {};
+var player = require('./models/player.js');
+var room = require('./models/room.js');
 
-// rooms which are currently available in chat
-    var rooms = {};
-
-    var pcs = {};
-
-    var colors = ["blue", "green", "orange", "red"];
-
-    function makeid()
-    {
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        for( var i=0; i < 5; i++ )
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-        return text;
-    }
-
-    function addRoom(socket){
-        var roomId = makeid();
-        if(rooms.hasOwnProperty(roomId)){
-            addRoom();
-        }else{
-            rooms[roomId] = {usernames:{},room:socket.id, canJoin:true};
-        }
-        socket.room = roomId;
-    }
+module.exports = function (io) {
 
     io.sockets.on('connection', function (socket) {
         socket.on('pcconnect',function(){
             console.log("new room is made: "+socket.id);
-            //rooms[roomId]=socket.id;
-            addRoom(socket);
-            console.log(rooms);
-            // store the room name in the socket session for this client
-
-            // join room
-            //socket.join(socket.id);
+            var temp = new room(socket.id);
+            room.allRooms[temp.roomId] = temp;
+            console.log(room.allRooms);
             if (io.sockets.connected[socket.id]) {
-                io.sockets.connected[socket.id].emit('requestRoom', socket.room);
+                io.sockets.connected[socket.id].emit('requestRoom', room.allRooms.selectRoom(socket.id));
             }
         });
 
         socket.on('gsmConnect',function(data){
             var message;
-            if(data.room in rooms) {
-                var userLength = Object.keys(rooms[data.room].usernames).length;
-                if (userLength < 4 && rooms[data.room].canJoin == true){
-                    if(!(data.username in rooms[data.room].usernames)) {
+            if(data.room in room.allRooms) {
+                var selectedRoom = room.allRooms[data.room];
+                var userLength = selectedRoom.players.length;
+                if (userLength < 4 && selectedRoom.canJoin == true){
+                    if(!(data.username in selectedRoom.players)) {
                         console.log(data.username + " connected to " + data.room);
+
                         socket.username = data.username;
-                        // store the room name in the socket session for this client
                         socket.room = data.room;
-                        // join room
                         socket.join(data.room);
-                        // add the client's username to the global list
-                        console.log(userLength);
-                        console.log(colors);
-                        rooms[data.room].usernames[data.username] = {
-                            username:data.username,
-                            posX: Math.floor(Math.random() * 100),
-                            posY: Math.floor(Math.random() * 100),
-                            rotation: Math.floor(Math.random() * 360),
-                            color: colors[userLength]
-                        };
-                        console.log(rooms[data.room].usernames[data.username]);
-                        console.log(rooms);
+
+                        var p = new player(data.username);
+                        selectedRoom.addUser(p);
+
                         message = "connectionEstablished";
-                        if (io.sockets.connected[rooms[socket.room].room]) {
-                            io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[data.room].usernames);
+                        if (io.sockets.connected[selectedRoom.socketId]) {
+                            io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
                         }
                     }
                     else{
@@ -90,19 +49,19 @@ module.exports = function (io ) {
             }else {
                 message = "connectionRefused";
             }
-            console.log(message);
             socket.emit("message", message);
         });
 
         var leaveRoom = function (){
-            if(socket.room in rooms){
-                if(socket.username in rooms[socket.room].usernames) {
-                    delete rooms[socket.room].usernames[socket.username];
-                    socket.leave(socket.room);
-                    if (io.sockets.connected[rooms[socket.room].room]) {
-                        io.sockets.connected[rooms[socket.room].room].emit('updateusers', rooms[socket.room].usernames);
-                    }
+            var selectedRoom = room.allRooms[socket.room];
+            if(selectedRoom != undefined){
+                if(selectedRoom.checkUser(socket.username)){
+                    selectedRoom.deleteUser(socket.username);
+                    socket.leave();
                     console.log(socket.username + " has left " + socket.room);
+                }
+                if (io.sockets.connected[selectedRoom.socketId]) {
+                    io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
                 }
             }
         };
@@ -113,41 +72,43 @@ module.exports = function (io ) {
         });
 
         socket.on('deviceOrientation', function(msg){
-            if (rooms[socket.room]) {
-                if(io.sockets.connected[rooms[socket.room].room]){
+            var selectedRoom = room.allRooms[socket.room];
+            if (selectedRoom != undefined) {
+                if(io.sockets.connected[selectedRoom.socketId]){
                     var data = {};
                     data.username = socket.username;
                     data.orientation = msg.beta;
-                    io.sockets.connected[rooms[socket.room].room].emit('updateGameData', data);
+                    io.sockets.connected[selectedRoom.socketId].emit('updateGameData', data);
                 }
             }
         });
 
         socket.on('playerShot', function(data){
-            if (rooms[socket.room]) {
-                if(io.sockets.connected[rooms[socket.room].room]){
+            var selectedRoom = room.allRooms[socket.room];
+            if (selectedRoom != undefined) {
+                if(io.sockets.connected[selectedRoom.socketId]){
                     var data2 = {};
                     data2.username = socket.username;
-                    io.sockets.connected[rooms[socket.room].room].emit('playerShot', data2);
+                    io.sockets.connected[selectedRoom.socketId].emit('playerShot', data2);
                 }
             }
-        })
+        });
 
-        //user closes window
         socket.on('disconnect', function(){
+            var selectedRoom = room.allRooms.selectRoom(socket.id);
             if('username' in socket){
                 leaveRoom();
             }else{
-                socket.to(socket.room).emit("roomDisconnect",null);
-                delete rooms[socket.room];
+                socket.to(selectedRoom.socketId).emit("roomDisconnect",null);
+                delete room.allRooms[selectedRoom.roomId];
             }
         });
 
         socket.on("startGame", function (data) {
-            // emit naar room
-            socket.to(socket.room).emit("message","startGame");
+            var selectedRoom = room.allRooms.selectRoom(socket.id);
+            socket.to(selectedRoom.socketId).emit("message","startGame");
             socket.emit("initGame", null);
-            rooms[socket.room].canJoin = false;
+            selectedRoom.canJoin = false;
         });
 
         socket.on("pauseGame", function (data) {

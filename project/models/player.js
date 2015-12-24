@@ -2,12 +2,12 @@
  * Created by justijndepover on 17/12/15.
  */
 
-var player = function(id, name){
-    this.id = id;
-    this.name = name;
-    this.posX;
-    this.posY;
-    this.rotation;
+var player = function(username){
+    this.username = username;
+    this.x = Math.floor(Math.random() * 100);
+    this.y = Math.floor(Math.random() * 100);
+    this.rotation = Math.floor(Math.random() * 360);
+    this.color = "blue";
 };
 
 module.exports = player;
