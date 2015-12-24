@@ -56,8 +56,8 @@ module.exports = room;
 
 Array.prototype.hasRoomInArray = function(roomId){
     var hasRoom = false;
-    for(var tempRoom in room.allRooms){
-        if(room.allRooms[tempRoom].roomId == roomId){
+    for(var tempRoom in this){
+        if(this[tempRoom].roomId == roomId){
             hasRoom = true;
         }
     }
@@ -66,9 +66,12 @@ Array.prototype.hasRoomInArray = function(roomId){
 
 Array.prototype.selectRoomId = function(socketId){
     var e = null;
-    for(var tempRoom in room.allRooms){
-        if(room.allRooms[tempRoom].socketId == socketId){
-            e = room.allRooms[tempRoom].roomId;
+    console.log("sockid: "+socketId);
+    console.log("room.allRooms: ");
+    console.log(this);
+    for(var tempRoom in this){
+        if(this[tempRoom].socketId == socketId){
+            return this[tempRoom].roomId;
         }
     }
     return e;

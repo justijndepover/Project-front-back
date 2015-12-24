@@ -23,6 +23,7 @@ module.exports = function (io) {
         });
 
         socket.on('gsmConnect',function(data){
+
             var message;
             if(data.room in room.allRooms) {
                 var selectedRoom = room.allRooms[data.room];
@@ -99,12 +100,12 @@ module.exports = function (io) {
         });
 
         socket.on('disconnect', function(){
-            var selectedRoomId = room.allRooms.selectRoomId(socket.id);
-            if(selectedRoomId != undefined){
-                if('username' in socket){
-                    leaveRoom();
-                }else{
-                    socket.to(room.allRooms[selectedRoomId].socketId).emit("roomDisconnect",null);
+            if('username' in socket){
+                leaveRoom();
+            }else{
+                var selectedRoomId = room.allRooms.selectRoomId(socket.id);
+                if(selectedRoomId != null) {
+                    socket.to(room.allRooms[selectedRoomId].socketId).emit("roomDisconnect", null);
                     delete room.allRooms[selectedRoomId];
                 }
             }
