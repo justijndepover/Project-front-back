@@ -19,7 +19,7 @@
             var BufferPlayer = playerService.getPlayers();
             for(var player in BufferPlayer){
                 var p = BufferPlayer[player];
-                AllPlayers.push(new Spaceship(p.username, p.posX, p.posY, p.color, p.rotation));
+                AllPlayers.push(new Spaceship(p.username, p.x, p.y, p.color, p.rotation));
             }
 
             cycle = $interval(draw, 10);

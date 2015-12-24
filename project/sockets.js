@@ -37,6 +37,8 @@ module.exports = function (io) {
                         socket.join(data.room);
 
                         var p = new player(data.username);
+                        console.log("player");
+                        console.log(p);
                         selectedRoom.addUser(p);
 
                         message = "connectionEstablished";
