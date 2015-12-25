@@ -31,6 +31,7 @@
         };
 
         socketService.on("message", function(message){
+            console.log(message);
             if(message == "connectionEstablished"){
                 $scope.text = "Waiting on other players";
                 $scope.startGame = false;

@@ -66,9 +66,6 @@ Array.prototype.hasRoomInArray = function(roomId){
 
 Array.prototype.selectRoomId = function(socketId){
     var e = null;
-    console.log("sockid: "+socketId);
-    console.log("room.allRooms: ");
-    console.log(this);
     for(var tempRoom in this){
         if(this[tempRoom].socketId == socketId){
             return this[tempRoom].roomId;

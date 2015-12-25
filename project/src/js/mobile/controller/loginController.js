@@ -24,8 +24,7 @@
         };
 
         socketService.on("message", function(message){
-            console.log("connectie");
-            switch( message){
+            switch(message){
                 case "connectionEstablished":
                     displayService.setPCShow(true);
                     displayService.setLCShow(false);
