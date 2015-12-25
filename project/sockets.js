@@ -113,7 +113,7 @@ module.exports = function (io) {
 
         socket.on("startGame", function (data) {
             var selectedRoomId = room.allRooms.selectRoomId(socket.id);
-            socket.to(room.allRooms[selectedRoomId].socketId).emit("message","startGame");
+            socket.to(room.allRooms[selectedRoomId].roomId).emit("message","startGame");
             socket.emit("initGame", null);
             room.allRooms[selectedRoomId].canJoin = false;
         });
