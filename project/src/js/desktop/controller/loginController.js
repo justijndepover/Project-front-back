@@ -25,7 +25,6 @@
         $scope.usernames = {};
         $scope.checkUserCount = false;
         socketService.on('updateusers', function (data) {
-            console.log(data);
             playerService.setPlayers(data);
             $scope.usernames = data;
             $scope.checkUserCount = Object.keys($scope.usernames).length < 0;

@@ -11,6 +11,8 @@ var Spaceship = function(userName, x, y, color, rotation){
     this.rotation = rotation;
     this.image = new Image();
     this.damage = 0;
+    this.width = 0;
+    this.height = 0;
     this.damageImage = new Image();
     this.image.src = '../assets/PNG/playerShip1_'+ this.color +'.png'
 };
@@ -49,7 +51,7 @@ Spaceship.prototype.increaseDamage = function(){
     }
 };
 
-Spaceship.prototype.increaseDamage = function(){
+Spaceship.prototype.decreaseDamage = function(){
     if(this.damage > 0){
         this.damage -= 1;
     }
