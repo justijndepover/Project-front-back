@@ -68,7 +68,7 @@ gulp.task("js-desktop-build", function(){
         "./src/js/desktop/**/*.js",
         "./src/js/shared/**/*.js"])
         //.pipe(jshint())
-        //.pipe(jshint.reporter(jsstylish))
+        .pipe(jshint.reporter(jsstylish))
         .pipe(sourcemaps.init())
         .pipe(concat("app.min.js"))
         .pipe(uglify())

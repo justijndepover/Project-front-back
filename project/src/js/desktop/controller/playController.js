@@ -46,9 +46,10 @@
             }
             if(p != null){
                 var temp = AllPlayers[p];
-                //var x  = Math.sin((temp.rotation - 90)/180*Math.PI)+temp.x;
-                //var y = Math.cos((temp.rotation - 90)/180*Math.PI)+temp.y;
-                AllBullets.push(new Bullet(temp.x, temp.y, temp.rotation, temp.color, temp.userName));
+                var angle = (360 -(temp.rotation + 180))/180*Math.PI;
+                var x = temp.x + (canv.width/400 * Math.sin(angle));
+                var y = temp.y + (canv.width/400 * Math.cos(angle));
+                AllBullets.push(new Bullet(x, y, temp.rotation, temp.color, temp.userName));
             }
         });
 
@@ -83,8 +84,6 @@
             }
 
             if(AllPlayers.length != 0){
-                AllPlayers[1].speed = 0;
-                AllPlayers[0].speed = 0;
                 var SpaceshipWidth = canv.width/20;
                 var SpaceshipHeight = SpaceshipWidth * AllPlayers[0].image.height/ AllPlayers[0].image.width;
 
@@ -124,19 +123,32 @@
             for(var p in AllPlayers){
                 for(var b in AllBullets){
                     if(AllBullets[b].player != AllPlayers[p].userName){
-                        var radius = Math.sqrt(2)/2*AllBullets[b].width/2;
-                        var angle = ((360 -(AllBullets[b].rotation - 90)) - 90)/180*Math.PI;
-                        var bulletHeadX = AllBullets[b].x + (radius * Math.sin(angle));
-                        var bulletHeadY = AllBullets[b].y + (radius * Math.cos(angle));
+                        var radius = Math.sqrt(2)/2*(AllBullets[b].height/2 - AllBullets[b].width/2);
+                        var angle = (360 -(AllBullets[b].rotation))/180*Math.PI;
+                        var bulletHeadX = (AllBullets[b].x*canv.width/100 - (radius * Math.sin(angle)));
+                        var bulletHeadY = (AllBullets[b].y*canv.width/100 - (radius * Math.cos(angle)));
 
-                        var radiusS = Math.sqrt(2)/2*AllPlayers[p].height/2;
-                        var angleS = ((360 -(AllPlayers[p].rotation - 90)) - 90)/180*Math.PI;
-                        var bulletHeadXS = AllPlayers[p].x + (radiusS * Math.sin(angleS));
-                        var bulletHeadYS = AllPlayers[p].y + (radiusS * Math.cos(angleS));
+                        var spaceShipX = AllPlayers[p].x*canv.width/100;
+                        var spaceShipY = AllPlayers[p].y*canv.width/100;
 
-                        var distance = Math.sqrt(Math.pow((bulletHeadX-bulletHeadXS), 2) + Math.pow((bulletHeadY-bulletHeadYS), 2))
-                        if(distance < (radius + radiusS)){
-                            AllPlayers[p].increaseDamage()
+                        /*ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(spaceShipX, spaceShipY, AllPlayers[p].width/2, 0, Math.PI*2);
+                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = '#0000FF';
+                        ctx.stroke();
+                        ctx.restore();
+
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(bulletHeadX, bulletHeadY, AllBullets[b].width/2, 0, Math.PI*2);
+                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = '#FF0000';
+                        ctx.stroke();
+                        ctx.restore();*/
+                        var distance = Math.sqrt((bulletHeadX-spaceShipX)*(bulletHeadX-spaceShipX) + (bulletHeadY-spaceShipY)*(bulletHeadY-spaceShipY));
+                        if(distance < (AllBullets[b].width/2 + AllPlayers[p].width/2)){
+                            AllPlayers[p].increaseDamage();
                             AllBullets.splice(b, 1);
                         }
                     }
