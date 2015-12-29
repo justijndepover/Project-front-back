@@ -23,7 +23,6 @@ module.exports = function (io) {
         });
 
         socket.on('gsmConnect',function(data){
-
             var message;
             if(data.room in room.allRooms) {
                 var selectedRoom = room.allRooms[data.room];
@@ -64,6 +63,8 @@ module.exports = function (io) {
                     selectedRoom.deleteUser(socket.username);
                     socket.leave();
                     console.log(socket.username + " has left " + socket.room);
+                    delete socket.username;
+                    delete socket.room;
                 }
                 if (io.sockets.connected[selectedRoom.socketId]) {
                     io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
@@ -77,24 +78,28 @@ module.exports = function (io) {
         });
 
         socket.on('deviceOrientation', function(msg){
-            var selectedRoom = room.allRooms[socket.room];
-            if (selectedRoom != undefined) {
-                if(io.sockets.connected[selectedRoom.socketId]){
-                    var data = {};
-                    data.username = socket.username;
-                    data.orientation = msg.beta;
-                    io.sockets.connected[selectedRoom.socketId].emit('updateGameData', data);
+            if('room' in socket) {
+                var selectedRoom = room.allRooms[socket.room];
+                if (selectedRoom != undefined) {
+                    if (io.sockets.connected[selectedRoom.socketId]) {
+                        var data = {};
+                        data.username = socket.username;
+                        data.orientation = msg.beta;
+                        io.sockets.connected[selectedRoom.socketId].emit('updateGameData', data);
+                    }
                 }
             }
         });
 
         socket.on('playerShot', function(data){
-            var selectedRoom = room.allRooms[socket.room];
-            if (selectedRoom != undefined) {
-                if(io.sockets.connected[selectedRoom.socketId]){
-                    var data2 = {};
-                    data2.username = socket.username;
-                    io.sockets.connected[selectedRoom.socketId].emit('playerShot', data2);
+            if('room' in socket) {
+                var selectedRoom = room.allRooms[socket.room];
+                if (selectedRoom != undefined) {
+                    if (io.sockets.connected[selectedRoom.socketId]) {
+                        var data2 = {};
+                        data2.username = socket.username;
+                        io.sockets.connected[selectedRoom.socketId].emit('playerShot', data2);
+                    }
                 }
             }
         });
