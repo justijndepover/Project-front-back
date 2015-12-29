@@ -20,13 +20,14 @@
         <p ng-hide="startGame">{{text}}</p>
         <div ng-show="startGame">
             <div class="btnShoot" ng-click="shoot()"><p>press to shoot</p></div>
-            <div class="btnSettings" ng-click="Settings()">
-                <svg viewBox="0 0 268.765 268.765"><use xlink:href="../assets/gear.svg#Settings"></use></svg>
-            </div>
-            <div ng-show="showSettings()">
-                <button id="btnColor">Choose color</button>
-                <button id="btnLeaveRoom" ng-click="leaveRoom()">Leave room</button>
-            </div>
+
+        </div>
+        <div class="btnSettings" ng-click="Settings()">
+            <svg viewBox="0 0 268.765 268.765"><use xlink:href="../assets/gear.svg#Settings"></use></svg>
+        </div>
+        <div class="settings" ng-show="showSettings()">
+            <button id="btnColor">Choose color</button>
+            <button id="btnLeaveRoom" ng-click="leaveRoom()">Leave room</button>
         </div>
     </section>
     <script src="../lib/angular/angular.js"></script>
