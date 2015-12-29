@@ -7,7 +7,19 @@
     "use strict";
     var playController = function($scope, $rootScope, socketService, eventService, displayService){
         $scope.PCShow = displayService.getPCShow;
+        $scope.showSettings = displayService.getSettingShow;
         $scope.startGame = false;
+        $scope.Settings = function(){
+            var btn = document.getElementsByClassName('btnSettings')[0].children[0];
+            if(btn.className.animVal == "rotate"){
+                displayService.setSettingShow(false);
+                btn.setAttribute('class', 'rotateAnti');
+            }else{
+                displayService.setSettingShow(true);
+                btn.setAttribute('class', 'rotate');
+            }
+
+        };
         $scope.shoot = function(){
             socketService.emit("playerShot", null);
         };

@@ -10,6 +10,8 @@
         //Play controller
         var PCShow = false;
 
+        var SettingShow = false;
+
         return{
             getLCShow: function(){
                 return LCShow;
@@ -22,7 +24,14 @@
             },
             setPCShow: function(value){
                 PCShow = value;
+            },
+            getSettingShow: function(){
+                return SettingShow;
+            },
+            setSettingShow: function(value){
+                SettingShow = value;
             }
+
         }
     };
 

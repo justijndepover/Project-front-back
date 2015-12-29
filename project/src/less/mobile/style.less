@@ -101,3 +101,54 @@ body{
     display: block;
   }
 }
+
+.btnSettings{
+  display: block;
+  position: absolute;
+  right: 5%;
+  top: 5%;
+  width: 10% !important;
+  height: 10% !important;
+
+  svg{
+    width: 100%;
+    height: 100%;
+    use{
+      fill: @color-info;
+    }
+  }
+}
+
+.rotate{
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-transform: rotate(145deg);
+  -moz-transform: rotate(145deg);
+  -ms-transform: rotate(145deg);
+  -o-transform: rotate(145deg);
+  transform: rotate(145deg);
+}
+
+.rotateAnti{
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-transform: rotate(-145deg);
+  -moz-transform: rotate(-145deg);
+  -ms-transform: rotate(-145deg);
+  -o-transform: rotate(-145deg);
+  transform: rotate(-145deg);
+}

@@ -12,8 +12,6 @@ var Bullet = function(x, y,rotation, color, player){
     this.height = 0;
     this.player = player;
     this.explosionImage = new Image();
-    this.shieldImage = new Image();
-    shieldImage.src = 
     this.explodeStage = 0;
     if(this.color == "orange"){
         this.color = 'red';
