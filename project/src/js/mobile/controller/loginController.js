@@ -12,7 +12,8 @@
             console.log("start game");
         });
         socketService.on("roomDisconnect", function (data) {
-
+            displayService.setPCShow(false);
+            displayService.setLCShow(true);
         });
 
         $scope.joinRoom = function(username, room){

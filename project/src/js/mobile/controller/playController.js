@@ -11,7 +11,7 @@
         $scope.startGame = false;
         $scope.Settings = function(){
             var btn = document.getElementsByClassName('btnSettings')[0].children[0];
-            if(btn.className.animVal == "rotate"){
+            if(btn.classList.contains('rotate')==true){
                 displayService.setSettingShow(false);
                 btn.setAttribute('class', 'rotateAnti');
             }else{

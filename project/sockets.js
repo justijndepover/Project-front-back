@@ -105,7 +105,7 @@ module.exports = function (io) {
             }else{
                 var selectedRoomId = room.allRooms.selectRoomId(socket.id);
                 if(selectedRoomId != null) {
-                    socket.to(room.allRooms[selectedRoomId].socketId).emit("roomDisconnect", null);
+                    socket.to(room.allRooms[selectedRoomId].roomId).emit("roomDisconnect", null);
                     delete room.allRooms[selectedRoomId];
                 }
             }
