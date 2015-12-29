@@ -40,6 +40,7 @@
             socketService.emit("gsmDisconnect", null);
             displayService.setLCShow(true);
             displayService.setPCShow(false);
+            displayService.setSettingShow(false);
         };
 
         socketService.on("message", function(message){

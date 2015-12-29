@@ -25,6 +25,16 @@
             cycle = $interval(draw, 10);
         });
 
+        socketService.on("userleft", function (data) {
+            var p = null;
+            for(var i in AllPlayers){
+                if(filterPlayers(AllPlayers[i],data) == true){
+                    p = i;
+                }
+            }
+            AllPlayers.splice(p,1);
+        });
+
         socketService.on("updateGameData", function(data){
             var p = null;
             for(var i in AllPlayers){
@@ -68,7 +78,9 @@
         }
 
         function draw(){
-            AllPlayers[0].speed = 0;
+            if(AllPlayers.length>0){
+                AllPlayers[0].speed = 0;
+            }
             ctx.clearRect(0,0,canv.width, canv.height);
             var ratio = canv.width/100;
 

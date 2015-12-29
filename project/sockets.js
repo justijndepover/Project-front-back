@@ -58,6 +58,8 @@ module.exports = function (io) {
 
         var leaveRoom = function (){
             var selectedRoom = room.allRooms[socket.room];
+            var leaveUser=socket.username;
+            var leaveRoom=socket.room;
             if(selectedRoom != undefined){
                 if(selectedRoom.checkUser(socket.username)){
                     selectedRoom.deleteUser(socket.username);
@@ -68,6 +70,10 @@ module.exports = function (io) {
                 }
                 if (io.sockets.connected[selectedRoom.socketId]) {
                     io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
+                    if(room.allRooms[leaveRoom].canJoin == false){
+                        io.sockets.connected[selectedRoom.socketId].emit('userleft',leaveUser );
+                        console.log(leaveUser);
+                    }
                 }
             }
         };
