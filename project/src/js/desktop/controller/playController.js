@@ -50,6 +50,12 @@
                 var x = temp.x + (canv.width/400 * Math.sin(angle));
                 var y = temp.y + (canv.width/400 * Math.cos(angle));
                 AllBullets.push(new Bullet(x, y, temp.rotation, temp.color, temp.userName));
+                if(p%2 == 0){
+                    var shot = new Audio('../../assets/Bonus/sfx_laser1.ogg');
+                }else{
+                    var shot = new Audio('../../assets/Bonus/sfx_laser2.ogg');
+                }
+                shot.play();
             }
         });
 
@@ -62,6 +68,7 @@
         }
 
         function draw(){
+            AllPlayers[0].speed = 0;
             ctx.clearRect(0,0,canv.width, canv.height);
             var ratio = canv.width/100;
 
@@ -73,13 +80,25 @@
                     var b = AllBullets[bullet];
                     b.width = BulletWidth;
                     b.height = BulletHeight;
-                    ctx.save();
-                    ctx.translate(b.x*ratio, b.y*ratio);
-                    ctx.rotate(b.rotation/180*Math.PI);
-                    ctx.drawImage(b.image, -BulletWidth/2, -BulletHeight/2, BulletWidth, BulletHeight);
-                    ctx.restore();
-                    AllBullets[bullet].x = Math.cos((b.rotation - 90)/180*Math.PI) + b.x;
-                    AllBullets[bullet].y = Math.sin((b.rotation - 90)/180*Math.PI)+ b.y;
+
+                    if(b.explodeStage == 0){
+                        //Draw bullet
+                        ctx.save();
+                        ctx.translate(b.x*ratio, b.y*ratio);
+                        ctx.rotate(b.rotation/180*Math.PI);
+                        ctx.drawImage(b.image, -BulletWidth/2, -BulletHeight/2, BulletWidth, BulletHeight);
+                        ctx.restore();
+
+                        AllBullets[bullet].x = Math.cos((b.rotation - 90)/180*Math.PI) + b.x;
+                        AllBullets[bullet].y = Math.sin((b.rotation - 90)/180*Math.PI)+ b.y;
+                    }else if(b.explodeStage < 4){
+                        //Draw explosion
+                        console.log(b.explosionImage);
+                        ctx.save();
+                        ctx.translate(b.x*ratio, b.y*ratio);
+                        ctx.drawImage(b.explosionImage, -BulletWidth, -BulletWidth, BulletWidth*2, BulletWidth*2);
+                        ctx.restore();
+                    }
                 }
             }
 
@@ -148,8 +167,14 @@
                         ctx.restore();*/
                         var distance = Math.sqrt((bulletHeadX-spaceShipX)*(bulletHeadX-spaceShipX) + (bulletHeadY-spaceShipY)*(bulletHeadY-spaceShipY));
                         if(distance < (AllBullets[b].width/2 + AllPlayers[p].width/2)){
+                            var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+                            damagesound.play();
                             AllPlayers[p].increaseDamage();
-                            AllBullets.splice(b, 1);
+                            if(AllBullets[b].explodeStage < 4){
+                                AllBullets[b].explode();
+                            }else{
+                                AllBullets.splice(b, 1);
+                            }
                         }
                     }
                 }
