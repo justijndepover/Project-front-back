@@ -48,6 +48,8 @@ Spaceship.prototype.increaseDamage = function(){
 
     if(this.damage <= 3 && this.damage > 0){
         this.damageImage.src = '../assets/PNG/Damage/playerShip1_damage'+ this.damage + '.png';
+    }else if(this.damage==4){
+        this.damageImage.src = '../assets/PNG/Damage/explode.gif';
     }
 };
 

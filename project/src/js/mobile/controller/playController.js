@@ -59,7 +59,13 @@
         });
 
         socketService.on("life",function(data){
-           $scope.life = data;
+            if(data==-1){
+                $scope.text = "Game over";
+                $scope.startGame=false;
+            }else{
+                $scope.life = data;
+            }
+
         });
     };
 
