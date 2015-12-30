@@ -17,6 +17,9 @@
     </section>
 
     <section ng-controller="playController" class="playSection" ng-show="PCShow()">
+        <div>
+            <img ng-repeat="i in getNumber(life) track by $index" src="../assets/PNG/UI/playerLife1_{{color}}.png" alt="playerlife">
+        </div>
         <p ng-hide="startGame">{{text}}</p>
         <div ng-show="startGame">
             <div class="btnShoot" ng-click="shoot()"><p>press to shoot</p></div>

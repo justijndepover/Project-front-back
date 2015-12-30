@@ -40,7 +40,16 @@ room.prototype.deleteUser = function(username){
         }
     }
 };
-
+/*
+room.prototype.selectUser = function(username){
+    for(var user in this.players){
+        if(this.players[user].username == username){
+            return this.player[user];
+        }
+    }
+    return null;
+};
+*/
 room.prototype.checkUser = function(username){
     for(var user in this.players){
         if(this.players[user].username == username){

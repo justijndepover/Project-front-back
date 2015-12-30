@@ -2,7 +2,8 @@
  * Created by justijndepover on 17/12/15.
  */
 
-var player = function(username){
+var player = function(id,username){
+    this.id = id;
     this.username = username;
     this.x = Math.floor(Math.random() * 100);
     this.y = Math.floor(Math.random() * 100);

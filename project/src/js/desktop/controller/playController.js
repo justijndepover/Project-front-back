@@ -189,6 +189,10 @@
                                 var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
                                 damagesound.play();
                                 AllPlayers[p].increaseDamage();
+                                var data = {};
+                                data.username = AllPlayers[p].userName;
+                                data.life = 3-AllPlayers[p].damage;
+                                socketService.emit("playerLife",data);
                                 AllBullets[b].explode();
                             }
                         }

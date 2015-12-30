@@ -35,7 +35,7 @@ module.exports = function (io) {
                         socket.room = data.room;
                         socket.join(data.room);
 
-                        var p = new player(data.username);
+                        var p = new player(socket.id, data.username);
                         selectedRoom.addUser(p);
 
                         message = "connectionEstablished";
@@ -77,6 +77,27 @@ module.exports = function (io) {
                 }
             }
         };
+        
+        socket.on("playerLife", function (data) {
+            console.log("-------------------lol1-------------------------");
+            console.log(socket.id);
+            console.log("-------------------lol2-------------------------");
+                console.log(room.allRooms);
+            console.log("-------------------lol3-------------------------");
+            //console.log(room.allRooms[socket.id]);
+            console.log(room.allRooms[room.allRooms.selectRoomId(socket.id)])
+                /*var player = room.allRooms[room.allRooms.selectRoomId(socket.id)].selectUser(data.username);
+                console.log(player);
+                console.log("-------------------hallo-------------------------");
+                if (player != null) {
+                    console.log('damage1');
+                    if (io.sockets.connected[player.id]) {
+                        console.log('damage2');
+                        io.sockets.connected[player.id].emit('life', data.life);
+                    }
+                }*/
+
+        });
 
         //user presses leave-room button
         socket.on('gsmDisconnect',function(msg){
