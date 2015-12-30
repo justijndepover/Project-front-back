@@ -35,7 +35,7 @@ room.prototype.addUser = function(User){
 
 room.prototype.deleteUser = function(username){
     for(var user in this.players){
-        if(user.username = username){
+        if(this.players[user].username == username){
             this.players.splice(username,1);
         }
     }
@@ -43,7 +43,7 @@ room.prototype.deleteUser = function(username){
 
 room.prototype.checkUser = function(username){
     for(var user in this.players){
-        if(user.username = username){
+        if(this.players[user].username == username){
             return true;
         }
     }
