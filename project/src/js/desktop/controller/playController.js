@@ -146,46 +146,50 @@
                 if(AllBullets[b].x < 0 || AllBullets[b].x > canv.width || AllBullets[b].y < 0 || AllBullets[b].y > canv.height){
                     AllBullets.splice(b, 1);
                 }
-
+                if(AllBullets[b].explodeStage >0) {
+                    if (AllBullets[b].explodeStage < 4) {
+                        AllBullets[b].explode();
+                    } else {
+                        AllBullets.splice(b, 1);
+                    }
+                }
             }
         }
 
         function collisionDetection(){
             for(var p in AllPlayers){
                 for(var b in AllBullets){
-                    if(AllBullets[b].player != AllPlayers[p].userName){
-                        var radius = Math.sqrt(2)/2*(AllBullets[b].height/2 - AllBullets[b].width/2);
-                        var angle = (360 -(AllBullets[b].rotation))/180*Math.PI;
-                        var bulletHeadX = (AllBullets[b].x*canv.width/100 - (radius * Math.sin(angle)));
-                        var bulletHeadY = (AllBullets[b].y*canv.width/100 - (radius * Math.cos(angle)));
+                    if(AllBullets[b].explodeStage == 0) {
+                        if (AllBullets[b].player != AllPlayers[p].userName) {
+                            var radius = Math.sqrt(2) / 2 * (AllBullets[b].height / 2 - AllBullets[b].width / 2);
+                            var angle = (360 - (AllBullets[b].rotation)) / 180 * Math.PI;
+                            var bulletHeadX = (AllBullets[b].x * canv.width / 100 - (radius * Math.sin(angle)));
+                            var bulletHeadY = (AllBullets[b].y * canv.width / 100 - (radius * Math.cos(angle)));
 
-                        var spaceShipX = AllPlayers[p].x*canv.width/100;
-                        var spaceShipY = AllPlayers[p].y*canv.width/100;
+                            var spaceShipX = AllPlayers[p].x * canv.width / 100;
+                            var spaceShipY = AllPlayers[p].y * canv.width / 100;
 
-                        /*ctx.save();
-                        ctx.beginPath();
-                        ctx.arc(spaceShipX, spaceShipY, AllPlayers[p].width/2, 0, Math.PI*2);
-                        ctx.lineWidth = 1;
-                        ctx.strokeStyle = '#0000FF';
-                        ctx.stroke();
-                        ctx.restore();
+                            /*ctx.save();
+                             ctx.beginPath();
+                             ctx.arc(spaceShipX, spaceShipY, AllPlayers[p].width/2, 0, Math.PI*2);
+                             ctx.lineWidth = 1;
+                             ctx.strokeStyle = '#0000FF';
+                             ctx.stroke();
+                             ctx.restore();
 
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.arc(bulletHeadX, bulletHeadY, AllBullets[b].width/2, 0, Math.PI*2);
-                        ctx.lineWidth = 1;
-                        ctx.strokeStyle = '#FF0000';
-                        ctx.stroke();
-                        ctx.restore();*/
-                        var distance = Math.sqrt((bulletHeadX-spaceShipX)*(bulletHeadX-spaceShipX) + (bulletHeadY-spaceShipY)*(bulletHeadY-spaceShipY));
-                        if(distance < (AllBullets[b].width/2 + AllPlayers[p].width/2)){
-                            var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
-                            damagesound.play();
-                            AllPlayers[p].increaseDamage();
-                            if(AllBullets[b].explodeStage < 4){
+                             ctx.save();
+                             ctx.beginPath();
+                             ctx.arc(bulletHeadX, bulletHeadY, AllBullets[b].width/2, 0, Math.PI*2);
+                             ctx.lineWidth = 1;
+                             ctx.strokeStyle = '#FF0000';
+                             ctx.stroke();
+                             ctx.restore();*/
+                            var distance = Math.sqrt((bulletHeadX - spaceShipX) * (bulletHeadX - spaceShipX) + (bulletHeadY - spaceShipY) * (bulletHeadY - spaceShipY));
+                            if (distance < (AllBullets[b].width / 2 + AllPlayers[p].width / 2)) {
+                                var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+                                damagesound.play();
+                                AllPlayers[p].increaseDamage();
                                 AllBullets[b].explode();
-                            }else{
-                                AllBullets.splice(b, 1);
                             }
                         }
                     }
