@@ -1,30 +1,47 @@
 /**
  * Created by justijndepover on 17/12/15.
  */
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
 
 var room = function(socketId){
-    this.roomId = addRoom();
+    var self = this;
     this.socketId = socketId;
     this.canJoin = true;
     this.players = [];
+    addRoom(function (error, roomId) {
+        self.roomId = roomId;
+        self.emit('roomCreated',roomId);
+    });
 };
+util.inherits(room, EventEmitter);
 
-function makeId(){
+function makeId(cb){
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    for( var i=0; i < 5; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
+    for( var i=0; i < 5; i++ ){
+        (function (i) {
+            setTimeout(function () {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+                if(i==4){
+                    cb(null, text);
+                }
+            }, 0);
+        })(i);
+    }
 }
 
-function addRoom(){
-    var roomId = makeId();
-    if(room.allRooms.hasRoomInArray(roomId)){
-        addRoom();
-    }
-    return roomId;
+function addRoom(cb){
+    makeId(function (error, roomId) {
+        room.allRooms.hasRoomInArray(roomId, function (error, roomInArray) {
+            if(roomInArray===true){
+                addRoom(cb);
+            }else{
+                cb(null, roomId);
+            }
+        });
+    });
 }
 
 room.prototype.addUser = function(User){
@@ -33,52 +50,63 @@ room.prototype.addUser = function(User){
     }
 };
 
-room.prototype.deleteUser = function(username){
-    for(var user in this.players){
-        if(this.players[user].username == username){
-            this.players.splice(username,1);
+room.prototype.deleteUser = function(username) {
+    var self = this;
+    this.players.forEach(function (user) {
+        if (user.username == username) {
+            self.players.splice(username, 1)
         }
-    }
+    });
 };
 
-room.prototype.selectUser = function(username){
-    for(var user in this.players){
-        if(this.players[user].username == username){
-            return this.players[user];
+room.prototype.selectUser = function(username, cb){
+    this.players.forEach(function (user) {
+        if(user.username == username){
+            cb(null, user);
         }
-    }
-    return null;
+    });
 };
 
-room.prototype.checkUser = function(username){
-    for(var user in this.players){
-        if(this.players[user].username == username){
-            return true;
+room.prototype.checkUser = function(username, cb){
+    this.players.forEach(function (user) {
+        if(user.username == username){
+            cb(null, true);
         }
-    }
-    return false;
+    });
 };
 
 room.allRooms = [];
 
 module.exports = room;
 
-Array.prototype.hasRoomInArray = function(roomId){
-    var hasRoom = false;
-    for(var tempRoom in this){
-        if(this[tempRoom].roomId == roomId){
-            hasRoom = true;
-        }
+Array.prototype.hasRoomInArray = function(roomId, cb){
+    var length = this.length;
+    if(length===0){
+        cb(null, false);
+    }else{
+        var roomInArray=false;
+        var overlopen=0;
+        var self = this;
+        Object.keys(self).forEach(function (tempRoom) {
+            overlopen++;
+            if(self[tempRoom].roomId === roomId){
+                roomInArray=true;
+            }
+            if(overlopen===length||roomInArray===true){
+                cb(null, roomInArray);
+            }
+        });
     }
-    return hasRoom;
 };
 
-Array.prototype.selectRoomId = function(socketId){
-    var e = null;
-    for(var tempRoom in this){
-        if(this[tempRoom].socketId == socketId){
-            return this[tempRoom].roomId;
+Array.prototype.selectRoomId = function(socketId, cb){
+    console.log(this.length);
+    console.log(typeof this);
+    var self = this;
+    Object.keys(self).forEach(function(tempRoom) {
+        if(self[tempRoom].socketId === socketId){
+
+            cb(null, self[tempRoom].roomId);
         }
-    }
-    return e;
+    });
 };

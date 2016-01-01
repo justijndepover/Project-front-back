@@ -10,16 +10,18 @@ module.exports = function (io) {
     io.sockets.on('connection', function (socket) {
         socket.on('pcconnect',function(){
             var temp = new room(socket.id);
-            room.allRooms[temp.roomId] = temp;
-            console.log("------------------------------------");
-            console.log("new room is made: "+temp.roomId + ", with socketId: " + temp.socketId);
-            console.log("++++++++++++++++++++++++++++++++++++");
-            console.log("list with available rooms: ");
-            console.log(room.allRooms);
-            console.log("------------------------------------");
-            if (io.sockets.connected[socket.id]) {
-                io.sockets.connected[socket.id].emit('requestRoom', room.allRooms.selectRoomId(socket.id));
-            }
+            temp.on('roomCreated', function(roomId){
+                room.allRooms[temp.roomId] = temp;
+                console.log("------------------------------------");
+                console.log("new room is made: "+temp.roomId + ", with socketId: " + temp.socketId);
+                console.log("++++++++++++++++++++++++++++++++++++");
+                console.log("list with available rooms: ");
+                console.log(room.allRooms);
+                console.log("------------------------------------");
+                if (io.sockets.connected[socket.id]) {
+                    io.sockets.connected[socket.id].emit('requestRoom', roomId);
+                }
+            });
         });
 
         socket.on('gsmConnect',function(data){
@@ -61,13 +63,15 @@ module.exports = function (io) {
             var leaveUser=socket.username;
             var leaveRoom=socket.room;
             if(selectedRoom !== undefined){
-                if(selectedRoom.checkUser(socket.username)){
-                    selectedRoom.deleteUser(socket.username);
-                    socket.leave();
-                    console.log(socket.username + " has left " + socket.room);
-                    delete socket.username;
-                    delete socket.room;
-                }
+                selectedRoom.checkUser(socket.username, function (error, userexist) {
+                    if(userexist===true){
+                        selectedRoom.deleteUser(socket.username);
+                        socket.leave();
+                        console.log(socket.username + " has left " + socket.room);
+                        delete socket.username;
+                        delete socket.room;
+                    }
+                });
                 if (io.sockets.connected[selectedRoom.socketId]) {
                     io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
                     if(room.allRooms[leaveRoom].canJoin === false){
@@ -79,24 +83,17 @@ module.exports = function (io) {
         };
         
         socket.on("playerLife", function (data) {
-            /*console.log("-------------------lol1-------------------------");
-            console.log(socket.id);
-            console.log("-------------------lol2-------------------------");
-                console.log(room.allRooms);
-            console.log("-------------------lol3-------------------------");
-            //console.log(room.allRooms[socket.id]);
-            console.log(room.allRooms[room.allRooms.selectRoomId(socket.id)])*/
-                var player = room.allRooms[room.allRooms.selectRoomId(socket.id)].selectUser(data.username);
-                console.log(player);
-                console.log("-------------------hallo-------------------------");
-                if (player !== null) {
-                    console.log('damage1');
-                    if (io.sockets.connected[player.id]) {
-                        console.log('damage2');
-                        io.sockets.connected[player.id].emit('life', data.life);
+            room.allRooms.selectRoomId(socket.id, function (error, roomid) {
+                room.allRooms[roomid].selectUser(data.username, function (error, player) {
+                    if (player !== null) {
+                        console.log('damage1');
+                        if (io.sockets.connected[player.id]) {
+                            console.log('damage2');
+                            io.sockets.connected[player.id].emit('life', data.life);
+                        }
                     }
-                }
-
+                });
+            });
         });
 
         //user presses leave-room button
@@ -135,19 +132,24 @@ module.exports = function (io) {
             if('username' in socket){
                 leaveRoom();
             }else{
-                var selectedRoomId = room.allRooms.selectRoomId(socket.id);
-                if(selectedRoomId !== null) {
-                    socket.to(room.allRooms[selectedRoomId].roomId).emit("roomDisconnect", null);
-                    delete room.allRooms[selectedRoomId];
-                }
+                room.allRooms.selectRoomId(socket.id, function (error, selectedRoomId) {
+                    if(selectedRoomId !== null) {
+                        socket.to(room.allRooms[selectedRoomId].roomId).emit("roomDisconnect", null);
+                        console.log(room.allRooms[selectedRoomId].roomId + " room deleted")
+                        delete room.allRooms[selectedRoomId];
+                    }
+                });
+
             }
         });
 
         socket.on("startGame", function (data) {
-            var selectedRoomId = room.allRooms.selectRoomId(socket.id);
-            socket.to(room.allRooms[selectedRoomId].roomId).emit("message","startGame");
-            socket.emit("initGame", null);
-            room.allRooms[selectedRoomId].canJoin = false;
+            room.allRooms.selectRoomId(socket.id, function (error, selectedRoomId) {
+                socket.to(room.allRooms[selectedRoomId].roomId).emit("message","startGame");
+                socket.emit("initGame", null);
+                room.allRooms[selectedRoomId].canJoin = false;
+            });
+
         });
 
         socket.on("pauseGame", function (data) {
