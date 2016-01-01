@@ -27,7 +27,7 @@ module.exports = function (io) {
             if(data.room in room.allRooms) {
                 var selectedRoom = room.allRooms[data.room];
                 var userLength = selectedRoom.players.length;
-                if (userLength < 4 && selectedRoom.canJoin == true){
+                if (userLength < 4 && selectedRoom.canJoin === true){
                     if(!(data.username in selectedRoom.players)) {
                         console.log(data.username + " connected to " + data.room);
 
@@ -60,7 +60,7 @@ module.exports = function (io) {
             var selectedRoom = room.allRooms[socket.room];
             var leaveUser=socket.username;
             var leaveRoom=socket.room;
-            if(selectedRoom != undefined){
+            if(selectedRoom !== undefined){
                 if(selectedRoom.checkUser(socket.username)){
                     selectedRoom.deleteUser(socket.username);
                     socket.leave();
@@ -70,7 +70,7 @@ module.exports = function (io) {
                 }
                 if (io.sockets.connected[selectedRoom.socketId]) {
                     io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
-                    if(room.allRooms[leaveRoom].canJoin == false){
+                    if(room.allRooms[leaveRoom].canJoin === false){
                         io.sockets.connected[selectedRoom.socketId].emit('userleft',leaveUser );
                         console.log(leaveUser);
                     }
@@ -89,7 +89,7 @@ module.exports = function (io) {
                 var player = room.allRooms[room.allRooms.selectRoomId(socket.id)].selectUser(data.username);
                 console.log(player);
                 console.log("-------------------hallo-------------------------");
-                if (player != null) {
+                if (player !== null) {
                     console.log('damage1');
                     if (io.sockets.connected[player.id]) {
                         console.log('damage2');
@@ -107,7 +107,7 @@ module.exports = function (io) {
         socket.on('deviceOrientation', function(msg){
             if('room' in socket) {
                 var selectedRoom = room.allRooms[socket.room];
-                if (selectedRoom != undefined) {
+                if (selectedRoom !== undefined) {
                     if (io.sockets.connected[selectedRoom.socketId]) {
                         var data = {};
                         data.username = socket.username;
@@ -121,7 +121,7 @@ module.exports = function (io) {
         socket.on('playerShot', function(data){
             if('room' in socket) {
                 var selectedRoom = room.allRooms[socket.room];
-                if (selectedRoom != undefined) {
+                if (selectedRoom !== undefined) {
                     if (io.sockets.connected[selectedRoom.socketId]) {
                         var data2 = {};
                         data2.username = socket.username;
@@ -136,7 +136,7 @@ module.exports = function (io) {
                 leaveRoom();
             }else{
                 var selectedRoomId = room.allRooms.selectRoomId(socket.id);
-                if(selectedRoomId != null) {
+                if(selectedRoomId !== null) {
                     socket.to(room.allRooms[selectedRoomId].roomId).emit("roomDisconnect", null);
                     delete room.allRooms[selectedRoomId];
                 }
