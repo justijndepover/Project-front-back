@@ -6,7 +6,7 @@
     "use strict";
     var playController = function($scope, $interval, $window, socketService, displayService, playerService){
         $scope.PCShow = displayService.getPCShow;
-        $scope.startGame = false;
+        $scope.endGame = false;
         var canv = document.getElementById('game');
         var ctx = canv.getContext('2d');
 
@@ -141,7 +141,6 @@
         }
 
         function checkBullets(){
-
             for(var b in AllBullets){
                 if(AllBullets[b].x < 0 || AllBullets[b].x > canv.width || AllBullets[b].y < 0 || AllBullets[b].y > canv.height){
                     AllBullets.splice(b, 1);
@@ -157,7 +156,11 @@
         }
 
         function collisionDetection(){
+            var livingPlayers=[];
             for(var p in AllPlayers){
+                if(AllPlayers[p].damage<4){
+                    livingPlayers.push(AllPlayers[p]);
+                }
                 for(var b in AllBullets){
                     if(AllBullets[b].explodeStage == 0) {
                         if (AllBullets[b].player != AllPlayers[p].userName) {
@@ -199,6 +202,18 @@
                     }
                 }
             }
+            if(livingPlayers==1){
+                endGame(livingPlayers);
+            }
+        }
+
+        function endGame(livingPlayers){
+            if (angular.isDefined(cycle)) {
+                $interval.cancel(cycle);
+                cycle = undefined;
+            }
+            $scope.endGame=true;
+            $scope.endGameText= livingPlayers[0].userName + " is the winner!"
         }
     };
 

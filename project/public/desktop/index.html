@@ -19,9 +19,12 @@
         <button class="btn btn-start" ng-disabled="checkUserCount" ng-click="startGame()">Start Game</button>
     </section>
     <section ng-controller="playController" ng-show="PCShow()">
-
         <canvas-directive></canvas-directive>
+        <div ng-show="EndGame">
+            <p>{{endGameText}}</p>
+        </div>
     </section>
+
 
 
 

@@ -17,6 +17,13 @@ var Spaceship = function(userName, x, y, color, rotation){
     this.image.src = '../assets/PNG/playerShip1_'+ this.color +'.png'
 };
 
+Spaceship.prototype.reset = function (x, y, rotation) {
+    this.speed = 1;
+    this.damage = 0;
+    this.damageImage = new Image();
+    this.image.src = '../assets/PNG/playerShip1_'+ this.color +'.png'
+};
+
 Spaceship.prototype.moveSpaceship = function(x, y){
     this.x = x;
     this.y = y;
