@@ -5,6 +5,7 @@
 (function(){
     "use strict";
     var playController = function($scope, $interval, $window, socketService, displayService, playerService){
+        var defaultVars = [{x:10, y:10,rotation:135},{x:90, y:10,rotation:225},{x:90, y:90,rotation:315},{x:10, y:90,rotation:45}];
         $scope.PCShow = displayService.getPCShow;
         $scope.endGame = false;
         var canv = document.getElementById('game');
@@ -17,9 +18,11 @@
 
         socketService.on("initGame", function(){
             var BufferPlayer = playerService.getPlayers();
+            var teller= 0;
             for(var player in BufferPlayer){
                 var p = BufferPlayer[player];
-                AllPlayers.push(new Spaceship(p.username, p.x, p.y, p.color, p.rotation));
+                AllPlayers.push(new Spaceship(p.username, defaultVars[teller].x, defaultVars[teller].y, p.color, defaultVars[teller].rotation));
+                teller++;
             }
 
             cycle = $interval(draw, 10);
@@ -60,26 +63,23 @@
                 var x = temp.x + (canv.width/400 * Math.sin(angle));
                 var y = temp.y + (canv.width/400 * Math.cos(angle));
                 AllBullets.push(new Bullet(x, y, temp.rotation, temp.color, temp.userName));
+                var audioUrl = '../../assets/Bonus/sfx_laser2.ogg';
                 if(p%2 == 0){
-                    var shot = new Audio('../../assets/Bonus/sfx_laser1.ogg');
-                }else{
-                    var shot = new Audio('../../assets/Bonus/sfx_laser2.ogg');
+                    audioUrl = '../../assets/Bonus/sfx_laser1.ogg';
                 }
+                var shot = new Audio(audioUrl);
                 shot.play();
             }
         });
 
         function filterPlayers(obj,data){
-            if(data.username == obj.userName){
-                return true;
-            }else{
-                return false;
-            }
+            return data.username == obj.userName;
         }
 
         function draw(){
             if(AllPlayers.length>0){
                 AllPlayers[0].speed = 0;
+                AllPlayers[1].speed = 0;
             }
             ctx.clearRect(0,0,canv.width, canv.height);
             var ratio = canv.width/100;
@@ -144,8 +144,7 @@
             for(var b in AllBullets){
                 if(AllBullets[b].x < 0 || AllBullets[b].x > canv.width || AllBullets[b].y < 0 || AllBullets[b].y > canv.height){
                     AllBullets.splice(b, 1);
-                }
-                if(AllBullets[b].explodeStage >0) {
+                }else if(AllBullets[b].explodeStage >0) {
                     if (AllBullets[b].explodeStage < 4) {
                         AllBullets[b].explode();
                     } else {
@@ -202,7 +201,7 @@
                     }
                 }
             }
-            if(livingPlayers==1){
+            if(livingPlayers.length==1){
                 endGame(livingPlayers);
             }
         }
@@ -215,6 +214,14 @@
             $scope.endGame=true;
             $scope.endGameText= livingPlayers[0].userName + " is the winner!"
         }
+        $scope.restartGame = function(){
+            $scope.endGame=false;
+            var teller=0;
+            for(var p in AllPlayers){
+                AllPlayers[p].reset(defaultVars[teller].x,defaultVars[teller].y,defaultVars[teller].rotation);
+                teller++;
+            }
+        };
     };
 
     angular.module("app").controller("playController", ["$scope", "$interval", "$window", "socketService", "displayService", "playerService", playController])

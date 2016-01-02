@@ -79,3 +79,24 @@ ul{
   background: url('../../assets/Backgrounds/darkpurple.png');
   border: solid 3px @color-accent-dark;
 }
+
+.box-overlay{
+  background-color: rgba(0,0,0,0.3);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 200px;
+  width: 50%;
+  border-radius: 10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  &>.btn{
+    width: 90%;
+  }
+  &>p{
+    color: #ffffff;
+    font-size: 2em;
+    text-align: center;
+  }
+}

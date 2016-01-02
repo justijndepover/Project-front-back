@@ -13,6 +13,7 @@ var room = function(socketId){
         self.roomId = roomId;
         self.emit('roomCreated',roomId);
     });
+    this.availableColors=["blue", "red", "orange","green"];
 };
 util.inherits(room, EventEmitter);
 
@@ -44,9 +45,10 @@ function addRoom(cb){
     });
 }
 
-room.prototype.addUser = function(User){
+room.prototype.addUser = function(user){
     if(this.players.length < 4){
-        this.players.push(User);
+        this.players.push(user);
+        this.availableColors.splice(user.color, 1);
     }
 };
 
@@ -54,7 +56,8 @@ room.prototype.deleteUser = function(username) {
     var self = this;
     this.players.forEach(function (user) {
         if (user.username == username) {
-            self.players.splice(username, 1)
+            self.availableColors.push(user.color);
+            self.players.splice(username, 1);
         }
     });
 };

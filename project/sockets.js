@@ -37,13 +37,14 @@ module.exports = function (io) {
                         socket.room = data.room;
                         socket.join(data.room);
 
-                        var p = new player(socket.id, data.username);
+                        var p = new player(socket.id, data.username, selectedRoom.availableColors[0]);
                         selectedRoom.addUser(p);
 
                         message = "connectionEstablished";
                         if (io.sockets.connected[selectedRoom.socketId]) {
                             io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
                         }
+                        socket.emit("color", p.color);
                     }
                     else{
                         message = "usernameExist";
@@ -64,13 +65,11 @@ module.exports = function (io) {
             var leaveRoom=socket.room;
             if(selectedRoom !== undefined){
                 selectedRoom.checkUser(socket.username, function (error, userexist) {
-                    if(userexist===true){
-                        selectedRoom.deleteUser(socket.username);
-                        socket.leave();
-                        console.log(socket.username + " has left " + socket.room);
-                        delete socket.username;
-                        delete socket.room;
-                    }
+                    selectedRoom.deleteUser(socket.username);
+                    socket.leave();
+                    console.log(socket.username + " has left " + socket.room);
+                    delete socket.username;
+                    delete socket.room;
                 });
                 if (io.sockets.connected[selectedRoom.socketId]) {
                     io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
@@ -135,7 +134,7 @@ module.exports = function (io) {
                 room.allRooms.selectRoomId(socket.id, function (error, selectedRoomId) {
                     if(selectedRoomId !== null) {
                         socket.to(room.allRooms[selectedRoomId].roomId).emit("roomDisconnect", null);
-                        console.log(room.allRooms[selectedRoomId].roomId + " room deleted")
+                        console.log(room.allRooms[selectedRoomId].roomId + " room deleted");
                         delete room.allRooms[selectedRoomId];
                     }
                 });

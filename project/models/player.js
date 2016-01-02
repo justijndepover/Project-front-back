@@ -2,13 +2,13 @@
  * Created by justijndepover on 17/12/15.
  */
 
-var player = function(id,username){
+var player = function(id,username,color){
     this.id = id;
     this.username = username;
-    this.x = Math.floor(Math.random() * 100);
-    this.y = Math.floor(Math.random() * 100);
-    this.rotation = Math.floor(Math.random() * 360);
-    this.color = "blue";
+    this.x = 0;
+    this.y = 0;
+    this.rotation = 0;
+    this.color = color;
 };
 
 module.exports = player;

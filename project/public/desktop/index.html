@@ -20,8 +20,9 @@
     </section>
     <section ng-controller="playController" ng-show="PCShow()">
         <canvas-directive></canvas-directive>
-        <div ng-show="EndGame">
+        <div ng-show="endGame" class="box-overlay">
             <p>{{endGameText}}</p>
+            <button class="btn btn-start" ng-disabled="checkUserCount" ng-click="restartGame()">Restart</button>
         </div>
     </section>
 

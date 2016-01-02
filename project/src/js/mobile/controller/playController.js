@@ -12,7 +12,6 @@
         $scope.getNumber = function(num) {
             return new Array(num);
         };
-        $scope.color="blue";
         $scope.startGame = false;
         $scope.Settings = function(){
             var btn = document.getElementsByClassName('btnSettings')[0].children[0];
@@ -25,6 +24,14 @@
             }
 
         };
+
+        socketService.on("roomDisconnect", function (data) {
+            $scope.life=3;
+            delete $scope.color;
+            delete $scope.text;
+            $scope.startGame=false;
+        });
+
         $scope.shoot = function(){
             socketService.emit("playerShot", null);
         };
@@ -56,6 +63,10 @@
             }else if(message == "startGame"){
                 $scope.startGame = true;
             }
+        });
+
+        socketService.on("color", function (data) {
+            $scope.color=data;
         });
 
         socketService.on("life",function(data){
