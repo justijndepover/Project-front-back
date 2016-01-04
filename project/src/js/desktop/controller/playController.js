@@ -13,6 +13,7 @@
 
         var AllPlayers = new Array();
         var AllBullets = new Array();
+        var AllAsteroids = new Array();
 
         var cycle;
 
@@ -24,6 +25,11 @@
                 AllPlayers.push(new Spaceship(p.username, defaultVars[teller].x, defaultVars[teller].y, p.color, defaultVars[teller].rotation));
                 teller++;
             }
+
+            for(var i = 0; i<10; i++){
+                AllAsteroids.push(new Asteroid(Math.floor(Math.random()*100), Math.floor(Math.random()*100), Math.floor(Math.random()*361), Math.ceil(Math.random()*20)));
+            }
+
 
             cycle = $interval(draw, 10);
         });
@@ -137,6 +143,52 @@
                 }
             }
 
+            if(AllAsteroids.length>0){
+                for(var Asteroid in AllAsteroids){
+                    var a = AllAsteroids[Asteroid];
+                    a.width = canv.width/1500* a.image.width;
+                    a.height = a.width* a.image.height/ a.image.width;
+                    ctx.save();
+                    ctx.translate(a.x*ratio, a.y*ratio);
+                    ctx.rotate(a.rotation/180*Math.PI);
+                    ctx.drawImage(a.image, -a.width/2, -a.height/2, a.width, a.height);
+                    ctx.restore();
+                    if(a.x < -5 || a.x > 105 || a.y < -5 || a.y > 105){
+                        //nieuwe asteroid tekenen
+                        var keuze = Math.random();
+                        if(keuze < 0.25){
+                            //links
+                            AllAsteroids[Asteroid].x = -4;
+                            AllAsteroids[Asteroid].y = Math.floor(Math.random()*100);
+                            AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180);
+                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
+                        }else if(keuze < 0.5){
+                            //boven
+                            AllAsteroids[Asteroid].x = Math.floor(Math.random()*100);
+                            AllAsteroids[Asteroid].y = -4;
+                            AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 90;
+                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
+                        }else if(keuze < 0.75){
+                            //rechts
+                            AllAsteroids[Asteroid].x = 104;
+                            AllAsteroids[Asteroid].y = Math.floor(Math.random()*100);
+                            AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 180;
+                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
+                        }else{
+                            //onder
+                            AllAsteroids[Asteroid].x = Math.floor(Math.random()*100);
+                            AllAsteroids[Asteroid].y = 104;
+                            AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 270;
+                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
+                        }
+
+                    }else{
+                        AllAsteroids[Asteroid].x = Math.cos((a.rotation - 90)/180*Math.PI)/30 + a.x;
+                        AllAsteroids[Asteroid].y = Math.sin((a.rotation - 90)/180*Math.PI)/30 + a.y;
+                    }
+                }
+            }
+
             checkBullets();
 
             collisionDetection();
@@ -173,21 +225,6 @@
                             var spaceShipX = AllPlayers[p].x * canv.width / 100;
                             var spaceShipY = AllPlayers[p].y * canv.width / 100;
 
-                            /*ctx.save();
-                             ctx.beginPath();
-                             ctx.arc(spaceShipX, spaceShipY, AllPlayers[p].width/2, 0, Math.PI*2);
-                             ctx.lineWidth = 1;
-                             ctx.strokeStyle = '#0000FF';
-                             ctx.stroke();
-                             ctx.restore();
-
-                             ctx.save();
-                             ctx.beginPath();
-                             ctx.arc(bulletHeadX, bulletHeadY, AllBullets[b].width/2, 0, Math.PI*2);
-                             ctx.lineWidth = 1;
-                             ctx.strokeStyle = '#FF0000';
-                             ctx.stroke();
-                             ctx.restore();*/
                             var distance = Math.sqrt((bulletHeadX - spaceShipX) * (bulletHeadX - spaceShipX) + (bulletHeadY - spaceShipY) * (bulletHeadY - spaceShipY));
                             if (distance < (AllBullets[b].width / 2 + AllPlayers[p].width / 2)) {
                                 /*var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
