@@ -27,7 +27,7 @@
             }
 
             for(var i = 0; i<10; i++){
-                AllAsteroids.push(new Asteroid(Math.floor(Math.random()*100), Math.floor(Math.random()*100), Math.floor(Math.random()*361), Math.ceil(Math.random()*20)));
+                AllAsteroids.push(new Asteroid(Math.floor(Math.random()*100), Math.floor(Math.random()*100), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
 
 
@@ -161,26 +161,24 @@
                             AllAsteroids[Asteroid].x = -4;
                             AllAsteroids[Asteroid].y = Math.floor(Math.random()*100);
                             AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180);
-                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
+                           ;
                         }else if(keuze < 0.5){
                             //boven
                             AllAsteroids[Asteroid].x = Math.floor(Math.random()*100);
                             AllAsteroids[Asteroid].y = -4;
                             AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 90;
-                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
                         }else if(keuze < 0.75){
                             //rechts
                             AllAsteroids[Asteroid].x = 104;
                             AllAsteroids[Asteroid].y = Math.floor(Math.random()*100);
                             AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 180;
-                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
                         }else{
                             //onder
                             AllAsteroids[Asteroid].x = Math.floor(Math.random()*100);
                             AllAsteroids[Asteroid].y = 104;
                             AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 270;
-                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
                         }
+                        AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*18))
 
                     }else{
                         AllAsteroids[Asteroid].x = Math.cos((a.rotation - 90)/180*Math.PI)/30 + a.x;
@@ -252,7 +250,7 @@
                     if (distance < (AllAsteroids[a].width / 2 + AllPlayers[p].width / 2)) {
                         var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
                         damagesound.play();
-                        AllPlayers[p].increaseDamage();
+                        AllPlayers[p].damage = 3;
                         var data = {};
                         data.username = AllPlayers[p].userName;
                         data.life = 3-AllPlayers[p].damage;
