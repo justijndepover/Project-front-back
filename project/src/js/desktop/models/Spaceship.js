@@ -63,6 +63,11 @@ Spaceship.prototype.increaseDamage = function(){
     }
 };
 
+Spaceship.prototype.dead = function () {
+    this.damage = 4;
+    this.damageImage.src = '../assets/PNG/Damage/explode.gif';
+};
+
 Spaceship.prototype.decreaseDamage = function(){
     if(this.damage > 0){
         this.damage -= 1;

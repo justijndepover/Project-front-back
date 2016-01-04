@@ -138,15 +138,17 @@
                         ctx.drawImage(p.damageImage, -SpaceshipWidth/2, -SpaceshipHeight/2, SpaceshipWidth, SpaceshipHeight);
                     }
                     ctx.restore();
-                    AllPlayers[player].x = Math.cos((p.rotation - 90)/180*Math.PI)/10* p.speed + p.x;
-                    AllPlayers[player].y = Math.sin((p.rotation - 90)/180*Math.PI)/10* p.speed + p.y;
+                    if(p.damage<4){
+                        AllPlayers[player].x = Math.cos((p.rotation - 90)/180*Math.PI)/10* p.speed + p.x;
+                        AllPlayers[player].y = Math.sin((p.rotation - 90)/180*Math.PI)/10* p.speed + p.y;
+                    }
                 }
             }
 
             if(AllAsteroids.length>0){
                 for(var Asteroid in AllAsteroids){
                     var a = AllAsteroids[Asteroid];
-                    a.width = canv.width/1500* a.image.width;
+                    a.width = canv.width/700* a.image.width;
                     a.height = a.width* a.image.height/ a.image.width;
                     ctx.save();
                     ctx.translate(a.x*ratio, a.y*ratio);
@@ -252,12 +254,11 @@
                     if (distance < (AllAsteroids[a].width / 2 + AllPlayers[p].width / 2)) {
                         var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
                         damagesound.play();
-                        AllPlayers[p].increaseDamage();
+                        AllPlayers[p].dead();
                         var data = {};
                         data.username = AllPlayers[p].userName;
                         data.life = 3-AllPlayers[p].damage;
                         socketService.emit("playerLife",data);
-                        AllBullets[b].explode();
                     }
                 }
 
@@ -269,7 +270,32 @@
 
 
             //Bullet - Asteroid
+            for(var a in AllAsteroids) {
+                for (var b in AllBullets) {
+                    if (AllBullets[b].explodeStage == 0) {
+                        if (AllBullets[b].player != AllAsteroids[a].userName) {
+                            var radius = Math.sqrt(2) / 2 * (AllBullets[b].height / 2 - AllBullets[b].width / 2);
+                            var angle = (360 - (AllBullets[b].rotation)) / 180 * Math.PI;
+                            var bulletHeadX = (AllBullets[b].x * canv.width / 100 - (radius * Math.sin(angle)));
+                            var bulletHeadY = (AllBullets[b].y * canv.width / 100 - (radius * Math.cos(angle)));
 
+                            var asteroidX = AllAsteroids[a].x * canv.width / 100;
+                            var asteroidY = AllAsteroids[a].y * canv.width / 100;
+
+                            var distance = Math.sqrt((bulletHeadX - asteroidX) * (bulletHeadX - asteroidX) + (bulletHeadY - asteroidY) * (bulletHeadY - asteroidY));
+                            if (distance < (AllBullets[b].width / 2 + AllAsteroids[a].width / 2)) {
+                                var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+                                damagesound.play();
+                                var data = {};
+                                data.username = AllAsteroids[a].userName;
+                                data.life = 3 - AllAsteroids[a].damage;
+                                socketService.emit("playerLife", data);
+                                AllBullets[b].explode();
+                            }
+                        }
+                    }
+                }
+            }
 
             if(livingPlayers.length==1){
                 endGame(livingPlayers);
