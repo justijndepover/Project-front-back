@@ -14,6 +14,7 @@
         var AllPlayers = new Array();
         var AllBullets = new Array();
         var AllAsteroids = new Array();
+        var AllPowerUps = new Array();
 
         var cycle;
 
@@ -27,12 +28,32 @@
             }
 
             for(var i = 0; i<15; i++){
-                AllAsteroids.push(new Asteroid(Math.floor(Math.random()*100), Math.floor(Math.random()*100), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
+                AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
 
 
             cycle = $interval(draw, 10);
         });
+
+        function createCoordinateX(){
+            var x = Math.floor(Math.random()*100);
+            for(var p in AllPlayers){
+                if(Math.abs(AllPlayers[p].x - x) < 10){
+                    return createCoordinateX();
+                }
+            }
+            return x;
+        }
+
+        function createCoordinateY(){
+            var y = Math.floor(Math.random()*100);
+            for(var p in AllPlayers){
+                if(Math.abs(AllPlayers[p].y - y) < 10){
+                    return createCoordinateY();
+                }
+            }
+            return y;
+        }
 
         socketService.on("userleft", function (data) {
             var p = null;
@@ -353,8 +374,9 @@
             }
             AllAsteroids=[];
             for(var i = 0; i<15; i++){
-                AllAsteroids.push(new Asteroid(Math.floor(Math.random()*100), Math.floor(Math.random()*100), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
+                AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
+            AllBullets = [];
             ctx.clearRect(0,0,canv.width, canv.height);
             socketService.emit("restartGame",null);
             cycle = $interval(draw, 10);
