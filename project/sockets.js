@@ -162,7 +162,9 @@ module.exports = function (io) {
         socket.on("endGame", function (username) {
             room.allRooms.selectRoomId(socket.id, function (error, roomId) {
                 room.allRooms[roomId].selectUser(username, function (error, player) {
-                    io.sockets.connected[player.id].emit("message","winner");
+                    if(io.sockets.connected[player.id]) {
+                        io.sockets.connected[player.id].emit("message", "winner");
+                    }
                 });
             });
         });

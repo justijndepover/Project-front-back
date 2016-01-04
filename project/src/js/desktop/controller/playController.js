@@ -26,8 +26,8 @@
                 teller++;
             }
 
-            for(var i = 0; i<10; i++){
-                AllAsteroids.push(new Asteroid(Math.floor(Math.random()*100), Math.floor(Math.random()*100), Math.floor(Math.random()*361), Math.ceil(Math.random()*20)));
+            for(var i = 0; i<15; i++){
+                AllAsteroids.push(new Asteroid(Math.floor(Math.random()*100), Math.floor(Math.random()*100), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
 
 
@@ -85,10 +85,10 @@
         }
 
         function draw(){
-            if(AllPlayers.length>0){
-                //AllPlayers[0].speed = 0;
-                //AllPlayers[1].speed = 0;
-            }
+            /*if(AllPlayers.length>0){
+                AllPlayers[0].speed = 0;
+                AllPlayers[1].speed = 0;
+            }*/
             ctx.clearRect(0,0,canv.width, canv.height);
             var ratio = canv.width/100;
 
@@ -163,26 +163,23 @@
                             AllAsteroids[Asteroid].x = -4;
                             AllAsteroids[Asteroid].y = Math.floor(Math.random()*100);
                             AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180);
-                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
                         }else if(keuze < 0.5){
                             //boven
                             AllAsteroids[Asteroid].x = Math.floor(Math.random()*100);
                             AllAsteroids[Asteroid].y = -4;
                             AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 90;
-                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
                         }else if(keuze < 0.75){
                             //rechts
                             AllAsteroids[Asteroid].x = 104;
                             AllAsteroids[Asteroid].y = Math.floor(Math.random()*100);
                             AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 180;
-                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
                         }else{
                             //onder
                             AllAsteroids[Asteroid].x = Math.floor(Math.random()*100);
                             AllAsteroids[Asteroid].y = 104;
                             AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 270;
-                            AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*20));
                         }
+                        AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*18));
 
                     }else{
                         AllAsteroids[Asteroid].x = Math.cos((a.rotation - 90)/180*Math.PI)/30 + a.x;
@@ -264,10 +261,44 @@
 
                 //Player - Player
 
+                for(var a in AllPlayers){
+                    if(a!=p){
+                        var spaceShip1X = AllPlayers[a].x * canv.width / 100;
+                        var spaceShip1Y = AllPlayers[a].y * canv.width / 100;
+
+                        var spaceShipX = AllPlayers[p].x * canv.width / 100;
+                        var spaceShipY = AllPlayers[p].y * canv.width / 100;
+
+                        var distance = Math.sqrt((spaceShip1X - spaceShipX) * (spaceShip1X - spaceShipX) + (spaceShip1Y - spaceShipY) * (spaceShip1Y - spaceShipY));
+                        if (distance < (AllPlayers[a].width / 2 + AllPlayers[p].width / 2)) {
+                            var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+                            damagesound.play();
+                            AllPlayers[p].dead();
+                            AllPlayers[a].dead();
+                            var data = {};
+                            data.username = AllPlayers[p].userName;
+                            data.life = 3-AllPlayers[p].damage;
+                            socketService.emit("playerLife",data);
+                            data.username = AllPlayers[a].userName;
+                            data.life = 3-AllPlayers[a].damage;
+                            socketService.emit("playerLife",data);
+                        }
+                    }
+                }
+
+                //Player - Wall
+                if(AllPlayers[p].x*canv.width/100 < AllPlayers[p].height/2 || AllPlayers[p].x*canv.width/100 > canv.width-(AllPlayers[p].height/2)||
+                    AllPlayers[p].y*canv.width/100 < AllPlayers[p].height/2 || AllPlayers[p].y*canv.width/100 > canv.width-(AllPlayers[p].height/2)){
+                    var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+                    damagesound.play();
+                    AllPlayers[p].dead();
+                    var data = {};
+                    data.username = AllPlayers[p].userName;
+                    data.life = 3-AllPlayers[p].damage;
+                    socketService.emit("playerLife",data);
+                }
+
             }
-
-
-
 
             //Bullet - Asteroid
             for(var a in AllAsteroids) {
@@ -297,6 +328,8 @@
                 }
             }
 
+            //
+
             if(livingPlayers.length==1){
                 endGame(livingPlayers);
             }
@@ -308,7 +341,7 @@
                 cycle = undefined;
             }
             $scope.endGame=true;
-            $scope.endGameText= livingPlayers[0].userName + " is the winner!"
+            $scope.endGameText= livingPlayers[0].userName + " is the winner!";
             socketService.emit("endGame", livingPlayers[0].userName);
         }
         $scope.restartGame = function(){
@@ -317,6 +350,10 @@
             for(var p in AllPlayers){
                 AllPlayers[p].reset(defaultVars[teller].x,defaultVars[teller].y,defaultVars[teller].rotation);
                 teller++;
+            }
+            AllAsteroids=[];
+            for(var i = 0; i<15; i++){
+                AllAsteroids.push(new Asteroid(Math.floor(Math.random()*100), Math.floor(Math.random()*100), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
             ctx.clearRect(0,0,canv.width, canv.height);
             socketService.emit("restartGame",null);

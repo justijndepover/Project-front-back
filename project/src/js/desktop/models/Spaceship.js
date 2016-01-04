@@ -42,6 +42,11 @@ Spaceship.prototype.rotateSpaceship = function(degree){
 };
 
 Spaceship.prototype.rotateSpaceshipRelative = function(degree){
+    if(degree>80){
+        degree=80;
+    }else if (degree<-80){
+        degree = -80;
+    }
     this.rotation = this.rotation + degree/5;
     if(this.rotation < -360){
         this.rotation = this.rotation + 720;
