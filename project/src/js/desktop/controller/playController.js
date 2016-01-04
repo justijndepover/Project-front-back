@@ -209,6 +209,7 @@
         }
 
         function collisionDetection(){
+            //Player - Bullet
             var livingPlayers=[];
             for(var p in AllPlayers){
                 if(AllPlayers[p].damage<4){
@@ -227,8 +228,8 @@
 
                             var distance = Math.sqrt((bulletHeadX - spaceShipX) * (bulletHeadX - spaceShipX) + (bulletHeadY - spaceShipY) * (bulletHeadY - spaceShipY));
                             if (distance < (AllBullets[b].width / 2 + AllPlayers[p].width / 2)) {
-                                /*var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
-                                damagesound.play();*/
+                                var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+                                damagesound.play();
                                 AllPlayers[p].increaseDamage();
                                 var data = {};
                                 data.username = AllPlayers[p].userName;
@@ -239,7 +240,37 @@
                         }
                     }
                 }
+                //Player - Asteroid
+                for(var a in AllAsteroids){
+                    var asteroidX = AllAsteroids[a].x * canv.width / 100;
+                    var asteroidY = AllAsteroids[a].y * canv.width / 100;
+
+                    var spaceShipX = AllPlayers[p].x * canv.width / 100;
+                    var spaceShipY = AllPlayers[p].y * canv.width / 100;
+
+                    var distance = Math.sqrt((asteroidX - spaceShipX) * (asteroidX - spaceShipX) + (asteroidY - spaceShipY) * (asteroidY - spaceShipY));
+                    if (distance < (AllAsteroids[a].width / 2 + AllPlayers[p].width / 2)) {
+                        var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+                        damagesound.play();
+                        AllPlayers[p].increaseDamage();
+                        var data = {};
+                        data.username = AllPlayers[p].userName;
+                        data.life = 3-AllPlayers[p].damage;
+                        socketService.emit("playerLife",data);
+                        AllBullets[b].explode();
+                    }
+                }
+
+                //Player - Player
+
             }
+
+
+
+
+            //Bullet - Asteroid
+
+
             if(livingPlayers.length==1){
                 endGame(livingPlayers);
             }
