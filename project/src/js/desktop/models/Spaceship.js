@@ -22,6 +22,9 @@ Spaceship.prototype.reset = function (x, y, rotation) {
     this.damage = 0;
     this.damageImage = new Image();
     this.image.src = '../assets/PNG/playerShip1_'+ this.color +'.png'
+    this.x = x;
+    this.y = y;
+    this.rotation = rotation;
 };
 
 Spaceship.prototype.moveSpaceship = function(x, y){

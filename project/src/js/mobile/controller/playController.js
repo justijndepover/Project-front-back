@@ -62,6 +62,13 @@
                 $scope.startGame = false;
             }else if(message == "startGame"){
                 $scope.startGame = true;
+            }else if (message == "winner"){
+                $scope.text = "Winner!!";
+                $scope.startGame = false;
+            }
+            else if(message== "restartGame"){
+                $scope.life=3;
+                $scope.startGame = true;
             }
         });
 
@@ -74,6 +81,11 @@
                 $scope.text = "Game over";
                 $scope.startGame=false;
             }else{
+                if($scope.life>data){
+                    if('vibrate' in navigator){
+                        navigator.vibrate(200);
+                    }
+                }
                 $scope.life = data;
             }
 

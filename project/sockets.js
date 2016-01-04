@@ -30,25 +30,27 @@ module.exports = function (io) {
                 var selectedRoom = room.allRooms[data.room];
                 var userLength = selectedRoom.players.length;
                 if (userLength < 4 && selectedRoom.canJoin === true){
-                    if(!(data.username in selectedRoom.players)) {
-                        console.log(data.username + " connected to " + data.room);
+                    selectedRoom.players.IsUserInArray(data.username,function (error, bool) {
+                        if(bool === false){
+                            console.log(data.username + " connected to " + data.room);
 
-                        socket.username = data.username;
-                        socket.room = data.room;
-                        socket.join(data.room);
+                            socket.username = data.username;
+                            socket.room = data.room;
+                            socket.join(data.room);
 
-                        var p = new player(socket.id, data.username, selectedRoom.availableColors[0]);
-                        selectedRoom.addUser(p);
+                            var p = new player(socket.id, data.username, selectedRoom.availableColors[0]);
+                            selectedRoom.addUser(p);
 
-                        message = "connectionEstablished";
-                        if (io.sockets.connected[selectedRoom.socketId]) {
-                            io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
+                            message = "connectionEstablished";
+                            if (io.sockets.connected[selectedRoom.socketId]) {
+                                io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
+                            }
+                            socket.emit("color", p.color);
                         }
-                        socket.emit("color", p.color);
-                    }
-                    else{
-                        message = "usernameExist";
-                    }
+                        else{
+                            message = "usernameExist";
+                        }
+                    });
                 }
                 else {
                     message = "roomFull";
@@ -83,6 +85,8 @@ module.exports = function (io) {
         
         socket.on("playerLife", function (data) {
             room.allRooms.selectRoomId(socket.id, function (error, roomid) {
+                console.log(roomid);
+                console.log(room.allRooms);
                 room.allRooms[roomid].selectUser(data.username, function (error, player) {
                     if (player !== null) {
                         console.log('damage1');
@@ -153,6 +157,21 @@ module.exports = function (io) {
 
         socket.on("pauseGame", function (data) {
 
+        });
+
+        socket.on("endGame", function (username) {
+            room.allRooms.selectRoomId(socket.id, function (error, roomId) {
+                room.allRooms[roomId].selectUser(username, function (error, player) {
+                    io.sockets.connected[player.id].emit("message","winner");
+                });
+            });
+        });
+
+        socket.on("restartGame", function (data) {
+            console.log("restartGame");
+            room.allRooms.selectRoomId(socket.id, function (error, selectedRoomId) {
+                socket.to(room.allRooms[selectedRoomId].roomId).emit("message", "restartGame");
+            });
         });
     });
 };

@@ -108,7 +108,6 @@ Array.prototype.selectRoomId = function(socketId, cb){
     var self = this;
     Object.keys(self).forEach(function(tempRoom) {
         if(self[tempRoom].socketId === socketId){
-
             cb(null, self[tempRoom].roomId);
         }
     });

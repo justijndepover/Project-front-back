@@ -51,24 +51,26 @@
         });
 
         socketService.on("playerShot", function(data){
-            var p = null;
-            for(var i in AllPlayers){
-                if(filterPlayers(AllPlayers[i],data) == true){
-                    p = i;
+            if($scope.endGame==false) {
+                var p = null;
+                for (var i in AllPlayers) {
+                    if (filterPlayers(AllPlayers[i], data) == true) {
+                        p = i;
+                    }
                 }
-            }
-            if(p != null){
-                var temp = AllPlayers[p];
-                var angle = (360 -(temp.rotation + 180))/180*Math.PI;
-                var x = temp.x + (canv.width/400 * Math.sin(angle));
-                var y = temp.y + (canv.width/400 * Math.cos(angle));
-                AllBullets.push(new Bullet(x, y, temp.rotation, temp.color, temp.userName));
-                var audioUrl = '../../assets/Bonus/sfx_laser2.ogg';
-                if(p%2 == 0){
-                    audioUrl = '../../assets/Bonus/sfx_laser1.ogg';
+                if (p != null) {
+                    var temp = AllPlayers[p];
+                    var angle = (360 - (temp.rotation + 180)) / 180 * Math.PI;
+                    var x = temp.x + (canv.width / 400 * Math.sin(angle));
+                    var y = temp.y + (canv.width / 400 * Math.cos(angle));
+                    AllBullets.push(new Bullet(x, y, temp.rotation, temp.color, temp.userName));
+                    var audioUrl = '../../assets/Bonus/sfx_laser2.ogg';
+                    if (p % 2 == 0) {
+                        audioUrl = '../../assets/Bonus/sfx_laser1.ogg';
+                    }
+                    var shot = new Audio(audioUrl);
+                    shot.play();
                 }
-                var shot = new Audio(audioUrl);
-                shot.play();
             }
         });
 
@@ -78,8 +80,8 @@
 
         function draw(){
             if(AllPlayers.length>0){
-                AllPlayers[0].speed = 0;
-                AllPlayers[1].speed = 0;
+                //AllPlayers[0].speed = 0;
+                //AllPlayers[1].speed = 0;
             }
             ctx.clearRect(0,0,canv.width, canv.height);
             var ratio = canv.width/100;
@@ -188,8 +190,8 @@
                              ctx.restore();*/
                             var distance = Math.sqrt((bulletHeadX - spaceShipX) * (bulletHeadX - spaceShipX) + (bulletHeadY - spaceShipY) * (bulletHeadY - spaceShipY));
                             if (distance < (AllBullets[b].width / 2 + AllPlayers[p].width / 2)) {
-                                var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
-                                damagesound.play();
+                                /*var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+                                damagesound.play();*/
                                 AllPlayers[p].increaseDamage();
                                 var data = {};
                                 data.username = AllPlayers[p].userName;
@@ -213,6 +215,7 @@
             }
             $scope.endGame=true;
             $scope.endGameText= livingPlayers[0].userName + " is the winner!"
+            socketService.emit("endGame", livingPlayers[0].userName);
         }
         $scope.restartGame = function(){
             $scope.endGame=false;
@@ -221,6 +224,9 @@
                 AllPlayers[p].reset(defaultVars[teller].x,defaultVars[teller].y,defaultVars[teller].rotation);
                 teller++;
             }
+            ctx.clearRect(0,0,canv.width, canv.height);
+            socketService.emit("restartGame",null);
+            cycle = $interval(draw, 10);
         };
     };
 
