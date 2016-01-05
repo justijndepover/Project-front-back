@@ -13,6 +13,7 @@ var Asteroid = function(x, y, rotation, stage){
     this.image = new Image();
     this.image.src = ("../assets/PNG/Meteors/meteor_" + stage + ".png");
     this.speed = 1;
+    this.box = false;
 };
 
 Asteroid.prototype.setImage = function(stage){

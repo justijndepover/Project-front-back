@@ -109,7 +109,7 @@
 
         function draw(){
             if(AllPlayers.length>0){
-                //AllPlayers[0].speed = 0;
+                AllPlayers[0].speed = 0;
                 //AllPlayers[1].speed = 0;
             }
 
@@ -324,20 +324,24 @@
                     }
 
                     if (distance < (AllAsteroids[a].width / 2 + AllPlayers[p].width / 2 * shieldRatio)) {
-                        var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
-                        damagesound.play();
-                        if(AllPlayers[p].shield){
-                            AllAsteroids[a].rotation = AllAsteroids[a].rotation + 180;
-                            AllAsteroids[a].speed = 3;
-                            AllAsteroids[a].x = Math.cos((AllAsteroids[a].rotation - 90)/180*Math.PI)/30*AllAsteroids[a].speed + AllAsteroids[a].x;
-                            AllAsteroids[a].y = Math.sin((AllAsteroids[a].rotation - 90)/180*Math.PI)/30*AllAsteroids[a].speed + AllAsteroids[a].y;
-                        }else{
-                            AllPlayers[p].dead();
-                            var data = {};
-                            data.username = AllPlayers[p].userName;
-                            data.life = 3-AllPlayers[p].damage;
-                            socketService.emit("playerLife",data);
+                        if(AllAsteroids[a].box == false){
+                            AllAsteroids[a].box = true;
+                            var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+                            damagesound.play();
+                            if(AllPlayers[p].shield){
+                                var angle = Math.atan(((AllAsteroids[a].y - AllPlayers[p].y)/(AllAsteroids[a].x - AllPlayers[p].x)));
+                                AllAsteroids[a].rotation = angle;
+                                AllAsteroids[a].speed = 6*AllPlayers[p].speed;
+                            }else{
+                                AllPlayers[p].dead();
+                                var data = {};
+                                data.username = AllPlayers[p].userName;
+                                data.life = 3-AllPlayers[p].damage;
+                                socketService.emit("playerLife",data);
+                            }
                         }
+                    }else if(distance > (AllAsteroids[a].width / 2 + AllPlayers[p].width / 2 * shieldRatio + 100)){
+                        AllAsteroids[a].box = false;
                     }
                 }
 
