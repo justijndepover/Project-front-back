@@ -10,8 +10,10 @@ var Powerup = function(x, y, type, boolSelf){
     this.height = 0;
     this.type = type;
     this.duration = 1000;
+    this.playerduration = 1000;
     var imageType;
     this.image = new Image();
+    this.boolSelf = boolSelf;
     switch(type){
         case 1:
             imageType = "bolt_";

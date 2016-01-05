@@ -15,7 +15,6 @@ var Spaceship = function(userName, x, y, color, rotation){
     this.height = 0;
     this.powerups = [];
     this.shield = false;
-    this.dead = false;
     this.shieldImage = new Image();
     this.shieldImage.src = "../assets/PNG/Effects/shield1.png";
     this.damageImage = new Image();
@@ -32,6 +31,7 @@ Spaceship.prototype.reset = function (x, y, rotation) {
     this.y = y;
     this.rotation = rotation;
     this.shield = false;
+    this.explodeStage = -1;
 };
 
 Spaceship.prototype.moveSpaceship = function(x, y){
@@ -71,22 +71,19 @@ Spaceship.prototype.increaseDamage = function(){
     if(this.damage <= 3 && this.damage > 0){
         this.damageImage.src = '../assets/PNG/Damage/playerShip1_damage'+ this.damage + '.png';
     }else if(this.damage==4){
-        this.dead = true;
-        this.damageImage.src = '../assets/PNG/Damage/explode.gif';
+        this.explode();
     }
 };
 
 Spaceship.prototype.dead = function () {
-    this.dead = true;
     this.damage = 4;
-    this.damageImage.src = '../assets/PNG/Damage/explode.gif';
+    this.explode();
 };
 
 Spaceship.prototype.explode = function(){
-    if(this.explodeStage <= 14){
+    if(this.explodeStage <= 140){
         this.explodeStage ++;
-        this.image = "";
-        this.damageImage.src = "../assets/PNG/Damage/frame" + this.explodeStage + ".gif";
+        this.damageImage.src = "../assets/PNG/Damage/frame" + Math.floor(this.explodeStage/10) + ".gif";
     }
 };
 
@@ -104,15 +101,36 @@ Spaceship.prototype.addPowerup = function(powerup){
     switch(powerup.type){
         case 1:
             this.speed ++;
+            this.powerups.push(powerup);
             break;
         case 2:
             this.shield = true;
+            this.powerups.push(powerup);
             break;
         case 3:
             this.damage = 0;
             this.damageImage.src = "";
             break;
     }
-    this.powerups.push(powerup);
+};
+
+Spaceship.prototype.checkPowerup = function(){
+    for(var p in this.powerups){
+        if(this.powerups[p].playerduration > 0){
+            this.powerups[p].playerduration --;
+        }else{
+            switch(this.powerups[p].type){
+                case 1:
+                    this.speed --;
+                    break;
+                case 2:
+                    this.shield = false;
+                    break;
+            }
+            console.log(this.powerups);
+            this.powerups.splice(p, 1);
+            console.log(this.powerups);
+        }
+    }
 };
 

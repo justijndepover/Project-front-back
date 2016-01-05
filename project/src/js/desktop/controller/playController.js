@@ -178,25 +178,27 @@
                     p.height = SpaceshipHeight;
                     ctx.save();
                     ctx.translate(p.x*ratio, p.y*ratio);
-                    ctx.rotate(p.rotation/180*Math.PI);
-                    ctx.drawImage(p.image, -SpaceshipWidth/2, -SpaceshipHeight/2, SpaceshipWidth, SpaceshipHeight);
-                    if(p.damage > 0){
-                        ctx.drawImage(p.damageImage, -SpaceshipWidth/2, -SpaceshipHeight/2, SpaceshipWidth, SpaceshipHeight);
-                    }
 
-                    if(p.dead){
+                    if(p.explodeStage == -1){
+                        ctx.rotate(p.rotation/180*Math.PI);
+                        ctx.drawImage(p.image, -SpaceshipWidth/2, -SpaceshipHeight/2, SpaceshipWidth, SpaceshipHeight);
+                    }else{
                         AllPlayers[player].explode();
+                    }
+                    if(p.damage > 0 && p.explodeStage <= 140){
+                        ctx.drawImage(p.damageImage, -SpaceshipWidth/2, -SpaceshipHeight/2, SpaceshipWidth, SpaceshipHeight);
                     }
 
                     if(p.damage<4){
                         AllPlayers[player].x = Math.cos((p.rotation - 90)/180*Math.PI)/10* p.speed + p.x;
                         AllPlayers[player].y = Math.sin((p.rotation - 90)/180*Math.PI)/10* p.speed + p.y;
                     }
-                    if(p.shield){
+                    if(p.shield && p.explodeStage == -1){
                         var ShieldWidth = SpaceshipWidth * 1.5;
                         var ShieldHeight = ShieldWidth / p.shieldImage.width * p.shieldImage.height;
                         ctx.drawImage(p.shieldImage, -ShieldWidth/2, -ShieldHeight/2, ShieldWidth, ShieldHeight);
                     }
+                    AllPlayers[player].checkPowerup();
                     ctx.restore();
                 }
             }
@@ -270,6 +272,8 @@
             for(var p in AllPlayers){
                 if(AllPlayers[p].damage<4){
                     livingPlayers.push(AllPlayers[p]);
+                }else{
+                    continue;
                 }
                 for(var b in AllBullets){
                     if(AllBullets[b].explodeStage == 0) {
@@ -338,8 +342,10 @@
                 }
 
                 //Player - Player
-
                 for(var a in AllPlayers){
+                    if(AllPlayers[a].damage == 4){
+                        continue;
+                    }
                     if(a!=p){
                         var spaceShip1X = AllPlayers[a].x * canv.width / 100;
                         var spaceShip1Y = AllPlayers[a].y * canv.width / 100;
@@ -398,7 +404,15 @@
                     if (distance < (AllPowerUps[a].width / 2 + AllPlayers[p].width / 2)) {
                         var powerupSound = new Audio('../../assets/Bonus/sfx_zap.ogg');
                         powerupSound.play();
-                        AllPlayers[p].addPowerup(AllPowerUps[a]);
+                        if(AllPowerUps[a].boolSelf == 1){
+                            for(var player in AllPlayers){
+                                if(player != p){
+                                    AllPlayers[player].addPowerup(AllPowerUps[a]);
+                                }
+                            }
+                        }else{
+                            AllPlayers[p].addPowerup(AllPowerUps[a]);
+                        }
                         if(AllPowerUps[a].type == 3){
                             var data = {};
                             data.username = AllPlayers[p].userName;
@@ -462,7 +476,7 @@
             }
             AllAsteroids=[];
             for(var i = 0; i<15; i++){
-                AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
+                //AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
             AllBullets = [];
             AllPowerUps = [];
