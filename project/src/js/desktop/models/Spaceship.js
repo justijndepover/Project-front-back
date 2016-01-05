@@ -127,6 +127,7 @@ Spaceship.prototype.checkPowerup = function(){
                     this.shield = false;
                     break;
             }
+            console.log("-------------");
             console.log(this.powerups);
             this.powerups.splice(p, 1);
             console.log(this.powerups);

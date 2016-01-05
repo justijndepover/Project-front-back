@@ -28,7 +28,7 @@
             }
 
             for(var i = 0; i<15; i++){
-                //AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
+                AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
 
 
@@ -109,7 +109,7 @@
 
         function draw(){
             if(AllPlayers.length>0){
-                AllPlayers[0].speed = 0;
+                //AllPlayers[0].speed = 0;
                 //AllPlayers[1].speed = 0;
             }
 
@@ -476,7 +476,7 @@
             }
             AllAsteroids=[];
             for(var i = 0; i<15; i++){
-                //AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
+                AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
             AllBullets = [];
             AllPowerUps = [];
