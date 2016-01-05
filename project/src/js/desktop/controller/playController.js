@@ -28,7 +28,7 @@
             }
 
             for(var i = 0; i<15; i++){
-                AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
+                //AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
 
 
@@ -105,13 +105,39 @@
             return data.username == obj.userName;
         }
 
+        var PowerupSpawnTime = Math.floor(Math.random()*500 + 500);
+
         function draw(){
-            /*if(AllPlayers.length>0){
+            if(AllPlayers.length>0){
                 AllPlayers[0].speed = 0;
-                AllPlayers[1].speed = 0;
-            }*/
+                //AllPlayers[1].speed = 0;
+            }
+
+            if(PowerupSpawnTime == 0){
+                PowerupSpawnTime = Math.floor(Math.random()*500 + 500);
+                AllPowerUps.push(new Powerup(Math.floor(Math.random()*100),Math.floor(Math.random()*100), Math.ceil(Math.random()*3),Math.floor(Math.random()*2)))
+            }else{
+                PowerupSpawnTime --;
+            }
+
             ctx.clearRect(0,0,canv.width, canv.height);
             var ratio = canv.width/100;
+
+            if(AllPowerUps.length != 0){
+                for(var powerup in AllPowerUps){
+                    var p = AllPowerUps[powerup];
+                    p.width = canv.width/50;
+                    p.height = p.width * p.image.height/ p.image.width;
+                    ctx.save();
+                    ctx.translate(p.x*ratio, p.y*ratio);
+                    ctx.drawImage(p.image, -p.width/2, -p.height/2, p.width, p.height);
+                    ctx.restore();
+                    p.decreaseDuration();
+                    if(p.duration == 0){
+                        AllPowerUps.splice(powerup, 1);
+                    }
+                }
+            }
 
             if(AllBullets.length != 0){
                 var BulletWidth = canv.width/100;
@@ -134,7 +160,6 @@
                         AllBullets[bullet].y = Math.sin((b.rotation - 90)/180*Math.PI)+ b.y;
                     }else if(b.explodeStage < 4){
                         //Draw explosion
-                        console.log(b.explosionImage);
                         ctx.save();
                         ctx.translate(b.x*ratio, b.y*ratio);
                         ctx.drawImage(b.explosionImage, -BulletWidth, -BulletWidth, BulletWidth*2, BulletWidth*2);
@@ -158,11 +183,21 @@
                     if(p.damage > 0){
                         ctx.drawImage(p.damageImage, -SpaceshipWidth/2, -SpaceshipHeight/2, SpaceshipWidth, SpaceshipHeight);
                     }
-                    ctx.restore();
+
+                    if(p.dead){
+                        AllPlayers[player].explode();
+                    }
+
                     if(p.damage<4){
                         AllPlayers[player].x = Math.cos((p.rotation - 90)/180*Math.PI)/10* p.speed + p.x;
                         AllPlayers[player].y = Math.sin((p.rotation - 90)/180*Math.PI)/10* p.speed + p.y;
                     }
+                    if(p.shield){
+                        var ShieldWidth = SpaceshipWidth * 1.5;
+                        var ShieldHeight = ShieldWidth / p.shieldImage.width * p.shieldImage.height;
+                        ctx.drawImage(p.shieldImage, -ShieldWidth/2, -ShieldHeight/2, ShieldWidth, ShieldHeight);
+                    }
+                    ctx.restore();
                 }
             }
 
@@ -200,11 +235,12 @@
                             AllAsteroids[Asteroid].y = 104;
                             AllAsteroids[Asteroid].rotation = Math.floor(Math.random()*180) + 270;
                         }
+                        AllAsteroids[Asteroid].speed = 1;
                         AllAsteroids[Asteroid].setImage(Math.ceil(Math.random()*18));
 
                     }else{
-                        AllAsteroids[Asteroid].x = Math.cos((a.rotation - 90)/180*Math.PI)/30 + a.x;
-                        AllAsteroids[Asteroid].y = Math.sin((a.rotation - 90)/180*Math.PI)/30 + a.y;
+                        AllAsteroids[Asteroid].x = Math.cos((a.rotation - 90)/180*Math.PI)/30*AllAsteroids[Asteroid].speed + a.x;
+                        AllAsteroids[Asteroid].y = Math.sin((a.rotation - 90)/180*Math.PI)/30*AllAsteroids[Asteroid].speed + a.y;
                     }
                 }
             }
@@ -247,14 +283,22 @@
                             var spaceShipY = AllPlayers[p].y * canv.width / 100;
 
                             var distance = Math.sqrt((bulletHeadX - spaceShipX) * (bulletHeadX - spaceShipX) + (bulletHeadY - spaceShipY) * (bulletHeadY - spaceShipY));
-                            if (distance < (AllBullets[b].width / 2 + AllPlayers[p].width / 2)) {
+
+                            var shieldRatio = 1;
+                            if(AllPlayers[p].shield){
+                                shieldRatio = 1.5;
+                            }
+
+                            if (distance < (AllBullets[b].width / 2 + AllPlayers[p].width / 2 * shieldRatio)) {
                                 var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
                                 damagesound.play();
-                                AllPlayers[p].increaseDamage();
-                                var data = {};
-                                data.username = AllPlayers[p].userName;
-                                data.life = 3-AllPlayers[p].damage;
-                                socketService.emit("playerLife",data);
+                                if(!AllPlayers[p].shield){
+                                    AllPlayers[p].increaseDamage();
+                                    var data = {};
+                                    data.username = AllPlayers[p].userName;
+                                    data.life = 3-AllPlayers[p].damage;
+                                    socketService.emit("playerLife",data);
+                                }
                                 AllBullets[b].explode();
                             }
                         }
@@ -269,14 +313,27 @@
                     var spaceShipY = AllPlayers[p].y * canv.width / 100;
 
                     var distance = Math.sqrt((asteroidX - spaceShipX) * (asteroidX - spaceShipX) + (asteroidY - spaceShipY) * (asteroidY - spaceShipY));
-                    if (distance < (AllAsteroids[a].width / 2 + AllPlayers[p].width / 2)) {
+
+                    var shieldRatio = 1;
+                    if(AllPlayers[p].shield){
+                        shieldRatio = 1.5;
+                    }
+
+                    if (distance < (AllAsteroids[a].width / 2 + AllPlayers[p].width / 2 * shieldRatio)) {
                         var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
                         damagesound.play();
-                        AllPlayers[p].dead();
-                        var data = {};
-                        data.username = AllPlayers[p].userName;
-                        data.life = 3-AllPlayers[p].damage;
-                        socketService.emit("playerLife",data);
+                        if(AllPlayers[p].shield){
+                            AllAsteroids[a].rotation = AllAsteroids[a].rotation + 180;
+                            AllAsteroids[a].speed = 3;
+                            AllAsteroids[a].x = Math.cos((AllAsteroids[a].rotation - 90)/180*Math.PI)/30*AllAsteroids[a].speed + AllAsteroids[a].x;
+                            AllAsteroids[a].y = Math.sin((AllAsteroids[a].rotation - 90)/180*Math.PI)/30*AllAsteroids[a].speed + AllAsteroids[a].y;
+                        }else{
+                            AllPlayers[p].dead();
+                            var data = {};
+                            data.username = AllPlayers[p].userName;
+                            data.life = 3-AllPlayers[p].damage;
+                            socketService.emit("playerLife",data);
+                        }
                     }
                 }
 
@@ -290,8 +347,18 @@
                         var spaceShipX = AllPlayers[p].x * canv.width / 100;
                         var spaceShipY = AllPlayers[p].y * canv.width / 100;
 
+                        var shieldRatio = 1;
+                        if(AllPlayers[p].shield){
+                            shieldRatio = 1.5;
+                        }
+
+                        var shieldRatio1 = 1;
+                        if(AllPlayers[a].shield){
+                            shieldRatio1 = 1.5;
+                        }
+
                         var distance = Math.sqrt((spaceShip1X - spaceShipX) * (spaceShip1X - spaceShipX) + (spaceShip1Y - spaceShipY) * (spaceShip1Y - spaceShipY));
-                        if (distance < (AllPlayers[a].width / 2 + AllPlayers[p].width / 2)) {
+                        if (distance < (AllPlayers[a].width / 2 * shieldRatio1 + AllPlayers[p].width / 2 * shieldRatio)) {
                             var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
                             damagesound.play();
                             AllPlayers[p].dead();
@@ -319,6 +386,29 @@
                     socketService.emit("playerLife",data);
                 }
 
+                //Player - Powerup
+                for(var a in AllPowerUps){
+                    var powerupX = AllPowerUps[a].x * canv.width / 100;
+                    var powerupY = AllPowerUps[a].y * canv.width / 100;
+
+                    var spaceShipX = AllPlayers[p].x * canv.width / 100;
+                    var spaceShipY = AllPlayers[p].y * canv.width / 100;
+
+                    var distance = Math.sqrt((powerupX - spaceShipX) * (powerupX - spaceShipX) + (powerupY - spaceShipY) * (powerupY - spaceShipY));
+                    if (distance < (AllPowerUps[a].width / 2 + AllPlayers[p].width / 2)) {
+                        var powerupSound = new Audio('../../assets/Bonus/sfx_zap.ogg');
+                        powerupSound.play();
+                        AllPlayers[p].addPowerup(AllPowerUps[a]);
+                        if(AllPowerUps[a].type == 3){
+                            var data = {};
+                            data.username = AllPlayers[p].userName;
+                            data.life = 3;
+                            socketService.emit("playerLife", data);
+                        }
+                        AllPowerUps.splice(a, 1);
+                    }
+                }
+
             }
 
             //Bullet - Asteroid
@@ -336,8 +426,6 @@
 
                             var distance = Math.sqrt((bulletHeadX - asteroidX) * (bulletHeadX - asteroidX) + (bulletHeadY - asteroidY) * (bulletHeadY - asteroidY));
                             if (distance < (AllBullets[b].width / 2 + AllAsteroids[a].width / 2)) {
-                                var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
-                                damagesound.play();
                                 var data = {};
                                 data.username = AllAsteroids[a].userName;
                                 data.life = 3 - AllAsteroids[a].damage;
@@ -377,6 +465,9 @@
                 AllAsteroids.push(new Asteroid(createCoordinateX(), createCoordinateY(), Math.floor(Math.random()*361), Math.ceil(Math.random()*18)));
             }
             AllBullets = [];
+            AllPowerUps = [];
+            PowerupSpawnTime = Math.floor(Math.random()*500 + 500);
+
             ctx.clearRect(0,0,canv.width, canv.height);
             socketService.emit("restartGame",null);
             cycle = $interval(draw, 10);
