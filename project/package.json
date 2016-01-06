@@ -3,12 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prestart": "start /b mongod --dbpath data",
-    "start": "node ./bin/www",
-    "poststop": "mongo admin --eval 'db.shutdownServer()' > /dev/null",
-    "pretest": "start /b mongod --dbpath data",
-    "test": "mocha test",
-    "posttest": "mongo admin --eval 'db.shutdownServer()' > /dev/null"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -21,3 +16,4 @@
     "serve-favicon": "~2.3.0"
   }
 }
+
