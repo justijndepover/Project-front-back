@@ -11,13 +11,18 @@ var gulp = require("gulp"),
     notify = require("gulp-notify"),
     jshint = require("gulp-jshint"),
     jsstylish = require("jshint-stylish"),
-    uglify = require("gulp-uglify");
+    uglify = require("gulp-uglify"),
+    //backend tests // npm install --save-dev gulp-mocha gulp-util
+    mocha = require('gulp-mocha'),
+    gulputil = require('gulp-util');
 
 gulp.task("default", function(){
     gulp.watch("./src/less/desktop/**/*.less", ['css-desktop-build']);
     gulp.watch("./src/less/mobile/**/*.less", ['css-mobile-build']);
     gulp.watch(["./src/js/desktop/**/*.js","./src/js/shared/**/*.js"], ['js-desktop-build']);
     gulp.watch(["./src/js/mobile/**/*.js","./src/js/shared/**/*.js"], ['js-mobile-build']);
+    // backend tests
+    gulp.watch(['tests/backend/*.js', './**/*.js'], ['mocha_test_uitvoeren']);
 });
 
 gulp.task("css-mobile-build", function(){
@@ -74,4 +79,10 @@ gulp.task("js-desktop-build", function(){
         .pipe(uglify())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest("./public/desktop/js",{overwrite: true}));
+});
+
+gulp.task('mocha_test_uitvoeren', function () {
+    return gulp.src(['tests/backend/*.js']   , { read: false })
+        .pipe(mocha({ reporter: 'list' }))
+        .on('error', gulputil.log);
 });
