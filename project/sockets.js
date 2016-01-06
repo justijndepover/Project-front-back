@@ -2,8 +2,10 @@
  * Created by Michiel on 10/12/2015.
  */
 
-var player = require('./models/player.js');
-var room = require('./models/room.js');
+var player = require('./data/models/player.js');
+var room = require('./data/models/room.js');
+var statisticsRepo = require("./data/models/statisticsRepo.js");
+var Statistic = require("./data/models/statistic.js");
 
 module.exports = function (io) {
 
@@ -148,9 +150,22 @@ module.exports = function (io) {
 
         socket.on("startGame", function (data) {
             room.allRooms.selectRoomId(socket.id, function (error, selectedRoomId) {
-                socket.to(room.allRooms[selectedRoomId].roomId).emit("message","startGame");
-                socket.emit("initGame", null);
-                room.allRooms[selectedRoomId].canJoin = false;
+                var statisticObject = {roomName: "" + room.allRooms[selectedRoomId].roomId, playerCount:room.allRooms[selectedRoomId].players.length};//room.allRooms[selectedRoomId]
+                statisticsRepo.createStatistic(statisticObject,function(next){
+                    if (next.errors && next.name === 'ValidationError') {
+                        var errString = Object.keys(next.errors).map(function (errField) {
+                            return next.errors[errField].message;
+                        }).join('<br />\n');
+                        socket.emit("message", errString);
+                    } else if (next.errors) {
+                        next(new Error(next.message));
+                    } else {
+                        //2. indien geen errors
+                        socket.to(room.allRooms[selectedRoomId].roomId).emit("message","startGame");
+                        socket.emit("initGame", null);
+                        room.allRooms[selectedRoomId].canJoin = false;
+                    }
+                });
             });
 
         });

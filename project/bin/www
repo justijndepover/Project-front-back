@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('spacewars:server');
 var http = require('http');
+var config = require('../config')
 
 /**
  * Get port from environment and store in Express.
@@ -15,8 +16,12 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+// executing database connectie
+var DBService = require("../data/connectDBService.js");
+var connectDB =  DBService (config.MONGODBURL,require('mongoose') ); //connected mongoose
+
 /**
- * Create HTTP server.
+ * Create HTTP server and socket
  */
 
 var server = http.createServer(app);
