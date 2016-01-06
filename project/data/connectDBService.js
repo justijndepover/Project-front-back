@@ -21,12 +21,6 @@ module.exports = (function (configURL, database) {
         }
 
         console.log(msg);
-
-        StatisticsRepo.getAllStatistics(function (err, statistics) {
-            if (!err) {
-                console.log(statistics);
-            }
-        });
     });
 
     database.connection.on("error", function (error) {
