@@ -15,7 +15,7 @@
         $scope.startGame = false;
         $scope.Settings = function(){
             var btn = document.getElementsByClassName('btnSettings')[0].children[0];
-            if(btn.classList.contains('rotate')==true){
+            if(btn.classList.contains('rotate')===true){
                 displayService.setSettingShow(false);
                 btn.setAttribute('class', 'rotateAnti');
             }else{
@@ -41,7 +41,7 @@
             //data.gamma = eventData.gamma;
             data.beta = eventData.beta;
             //data.alpha = eventData.alpha;
-            socketService.emit("deviceOrientation", data)
+            socketService.emit("deviceOrientation", data);
         };
         eventService.subscribeMe();
         $rootScope.$on('app.deviceorientationEvent', function(a, b) {
@@ -92,5 +92,5 @@
         });
     };
 
-    angular.module("app").controller("playController", ["$scope", "$rootScope", "socketService", "eventService", "displayService", playController])
+    angular.module("app").controller("playController", ["$scope", "$rootScope", "socketService", "eventService", "displayService", playController]);
 })();

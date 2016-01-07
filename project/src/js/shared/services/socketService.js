@@ -26,7 +26,7 @@
                         callback.apply(socket, args);
                     }
                 });
-            })
+            });
         };
 
         //public
@@ -34,7 +34,7 @@
             on: on,
             emit: emit,
             socket: socket
-        }
+        };
     };
 
     angular.module("app").factory("socketService", ["$rootScope", socketService]);

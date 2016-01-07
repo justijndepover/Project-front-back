@@ -14,7 +14,7 @@
             setPlayers: function(playersArray){
                 players = playersArray;
             }
-        }
+        };
     };
 
     angular.module('app').factory('playerService', [playerService]);

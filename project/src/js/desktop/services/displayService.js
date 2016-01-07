@@ -26,7 +26,7 @@
             setPCShow: function(value){
                 PCShow = value;
             }
-        }
+        };
     };
 
     angular.module('app').factory('displayService', [displayService]);

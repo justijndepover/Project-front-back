@@ -16,7 +16,7 @@ var Bullet = function(x, y,rotation, color, player){
     if(this.color == "orange"){
         this.color = 'red';
     }
-    this.image.src = '../assets/PNG/Lasers/laser'+ this.color.charAt(0).toUpperCase() + this.color.slice(1) +'01.png'
+    this.image.src = '../assets/PNG/Lasers/laser'+ this.color.charAt(0).toUpperCase() + this.color.slice(1) +'01.png';
 };
 
 Bullet.prototype.explode = function(){
@@ -24,9 +24,9 @@ Bullet.prototype.explode = function(){
         this.explodeStage++;
         var number;
         if(this.explodeStage < 3){
-           number = 1
+            number = 1;
         }else{
-            number = 2
+            number = 2;
         }
         this.explosionImage.src = '../assets/PNG/Lasers/laser' + this.color.charAt(0).toUpperCase() + this.color.slice(1) + 'Explode'+ number +'.png';
     }else{

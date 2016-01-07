@@ -31,8 +31,7 @@
             setSettingShow: function(value){
                 SettingShow = value;
             }
-
-        }
+        };
     };
 
     angular.module('app').factory('displayService', [displayService]);

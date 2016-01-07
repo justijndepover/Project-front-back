@@ -59,8 +59,8 @@ gulp.task("js-mobile-build", function(){
     gulp.src(["./src/app.js",
         "./src/js/mobile/**/*.js",
         "./src/js/shared/**/*.js"])
-        //.pipe(jshint())
-        //.pipe(jshint.reporter(jsstylish))
+        .pipe(jshint())
+        .pipe(jshint.reporter(jsstylish))
         .pipe(sourcemaps.init())
         .pipe(concat("app.min.js"))
         .pipe(uglify())
@@ -72,7 +72,7 @@ gulp.task("js-desktop-build", function(){
     gulp.src(["./src/app.js",
         "./src/js/desktop/**/*.js",
         "./src/js/shared/**/*.js"])
-        //.pipe(jshint())
+        .pipe(jshint())
         .pipe(jshint.reporter(jsstylish))
         .pipe(sourcemaps.init())
         .pipe(concat("app.min.js"))

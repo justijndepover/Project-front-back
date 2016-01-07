@@ -6,12 +6,12 @@
         function subsFunc() {
             $window.addEventListener('deviceorientation', function(e) {
                 $rootScope.$broadcast('app.deviceorientationEvent', e);
-            })
+            });
         }
 
         return {
             "subscribeMe": subsFunc
-        }
+        };
     };
     angular.module("app").factory("eventService", ["$rootScope","$window", eventService]);
 })();
