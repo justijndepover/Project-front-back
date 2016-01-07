@@ -270,13 +270,9 @@
             //Player - Bullet
             var livingPlayers=[];
             for(var p in AllPlayers){
-                if(AllPlayers[p].damage<4){
-                    livingPlayers.push(AllPlayers[p]);
-                }else{
+                if(AllPlayers[p].damage>=4){
                     continue;
                 }
-
-
                 var spaceShipX = AllPlayers[p].x * canv.width / 100;
                 var spaceShipY = AllPlayers[p].y * canv.width / 100;
                 var shieldRatio = 1;
@@ -324,11 +320,11 @@
                             AllAsteroids[a].box = true;
                             damagesound.play();
                             if(AllPlayers[p].shield){
-                                var angle = - (Math.atan2((AllAsteroids[a].y - AllPlayers[p].y),(AllAsteroids[a].x - AllPlayers[p].x))*180/Math.PI);
-                                if((angle > -90 && angle < 0) || (angle > 90 && angle < 180)){
-                                    AllAsteroids[a].rotation = 180 + angle;
+                                var angleP = - (Math.atan2((AllAsteroids[a].y - AllPlayers[p].y),(AllAsteroids[a].x - AllPlayers[p].x))*180/Math.PI);
+                                if((angleP > -90 && angleP < 0) || (angleP > 90 && angleP < 180)){
+                                    AllAsteroids[a].rotation = 180 + angleP;
                                 }else{
-                                    AllAsteroids[a].rotation = angle;
+                                    AllAsteroids[a].rotation = angleP;
                                 }
                                 AllAsteroids[a].speed = 6;//*AllPlayers[p].speed;
                             }else{
@@ -412,7 +408,9 @@
                         AllPowerUps.splice(pu, 1);
                     }
                 }
-
+                if(AllPlayers[p].damage<4){
+                    livingPlayers.push(AllPlayers[p]);
+                }
             }
 
             //Bullet - Asteroid
@@ -438,9 +436,7 @@
                 }
             }
 
-            //
-
-            if(livingPlayers.length===1){
+            if(livingPlayers.length<=1){
                 endGame(livingPlayers);
             }
         }
@@ -451,8 +447,13 @@
                 cycle = undefined;
             }
             $scope.endGame=true;
-            $scope.endGameText= livingPlayers[0].userName + " is the winner!";
-            socketService.emit("endGame", livingPlayers[0].userName);
+            if(livingPlayers.length===1) {
+                $scope.endGameText = livingPlayers[0].userName + " is the winner!";
+                socketService.emit("endGame", livingPlayers[0].userName);
+            }
+            else{
+                $scope.endGameText = "No winners";
+            }
         }
         $scope.restartGame = function(){
             $scope.endGame=false;
