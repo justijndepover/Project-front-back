@@ -32,6 +32,7 @@ module.exports = function (io) {
                 var selectedRoom = room.allRooms[data.room];
                 var userLength = selectedRoom.players.length;
                 if (userLength < 4 && selectedRoom.canJoin === true){
+                    data.username = data.username.toLowerCase();
                     selectedRoom.players.IsUserInArray(data.username,function (error, bool) {
                         if(bool === false){
                             console.log(data.username + " connected to " + data.room);
