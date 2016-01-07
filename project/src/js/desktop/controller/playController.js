@@ -324,8 +324,13 @@
                             AllAsteroids[a].box = true;
                             damagesound.play();
                             if(AllPlayers[p].shield){
-                                AllAsteroids[a].rotation = Math.atan(((AllAsteroids[a].y - AllPlayers[p].y)/(AllAsteroids[a].x - AllPlayers[p].x)));
-                                AllAsteroids[a].speed = 6*AllPlayers[p].speed;
+                                var angle = - (Math.atan2((AllAsteroids[a].y - AllPlayers[p].y),(AllAsteroids[a].x - AllPlayers[p].x))*180/Math.PI);
+                                if((angle > -90 && angle < 0) || (angle > 90 && angle < 180)){
+                                    AllAsteroids[a].rotation = 180 + angle;
+                                }else{
+                                    AllAsteroids[a].rotation = angle;
+                                }
+                                AllAsteroids[a].speed = 6;//*AllPlayers[p].speed;
                             }else{
                                 AllPlayers[p].dead();
                                 data = {};
