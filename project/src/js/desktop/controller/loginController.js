@@ -23,11 +23,11 @@
             deviceOrientation.alpha = data.alpha;
         });
         $scope.usernames = {};
-        $scope.checkUserCount = false;
+        $scope.checkUserCount = true;
         socketService.on('updateusers', function (data) {
             playerService.setPlayers(data);
             $scope.usernames = data;
-            $scope.checkUserCount = Object.keys($scope.usernames).length < 0;
+            $scope.checkUserCount = Object.keys($scope.usernames).length < 2;
         });
 
         $scope.startGame= function () {

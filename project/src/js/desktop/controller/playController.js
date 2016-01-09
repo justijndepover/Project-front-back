@@ -109,7 +109,7 @@
 
         function draw(){
             if(AllPlayers.length>0){
-                AllPlayers[0].speed = 0;
+                //AllPlayers[0].speed = 0;
                 //AllPlayers[1].speed = 0;
             }
 

@@ -14,7 +14,7 @@ var Spaceship = function(userName, x, y, color, rotation){
     this.width = 0;
     this.height = 0;
     this.powerups = [];
-    this.shield = true;
+    this.shield = false;
     this.shieldImage = new Image();
     this.shieldImage.src = "../assets/PNG/Effects/shield1.png";
     this.damageImage = new Image();
@@ -30,7 +30,7 @@ Spaceship.prototype.reset = function (x, y, rotation) {
     this.x = x;
     this.y = y;
     this.rotation = rotation;
-    //this.shield = false;
+    this.shield = false;
     this.explodeStage = -1;
 };
 
