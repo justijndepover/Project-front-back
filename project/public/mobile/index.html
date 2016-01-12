@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
 </head>
 <body>
-    <section class="loginSection center" ng-controller="loginController" ng-show="LCShow()">
+    <section class="loginSection center" ng-controller="loginController" ng-show="LCShow()" ng-cloak>
         <h1 class="Title">Space Wars</h1>
         <input class="codeInput" type="text" ng-model="roomId" placeholder="Room Name">
         <input class="UserNameInput" type="text" ng-model="UserName" placeholder="Username">
@@ -16,7 +16,7 @@
         <p>{{text}}</p>
     </section>
 
-    <section ng-controller="playController" class="playSection" ng-show="PCShow()">
+    <section ng-controller="playController" class="playSection" ng-show="PCShow()" ng-cloak>
         <div ng-show="startGame">
             <img ng-repeat="i in getNumber(life) track by $index" src="../assets/PNG/UI/playerLife1_{{color}}.png" alt="playerlife">
         </div>
