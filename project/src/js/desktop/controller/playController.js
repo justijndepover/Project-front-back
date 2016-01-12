@@ -91,12 +91,15 @@
                     var x = temp.x + (canv.width / 400 * Math.sin(angle));
                     var y = temp.y + (canv.width / 400 * Math.cos(angle));
                     AllBullets.push(new Bullet(x, y, temp.rotation, temp.color, temp.userName));
-                    var audioUrl = '../../assets/Bonus/sfx_laser2.ogg';
+
                     if (p % 2 === 0) {
-                        audioUrl = '../../assets/Bonus/sfx_laser1.ogg';
+                        shotLaser1.currentTime = 0;
+                        shotLaser1.play()
                     }
-                    var shot = new Audio(audioUrl);
-                    shot.play();
+                    else{
+                        shotLaser2.currentTime = 0;
+                        shotLaser2.play();
+                    }
                 }
             }
         });
@@ -265,7 +268,10 @@
                 }
             }
         }
-
+        var shotLaser1 = new Audio('../../assets/Bonus/sfx_laser1.ogg');
+        var shotLaser2 = new Audio('../../assets/Bonus/sfx_laser2.ogg');
+        var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
+        var powerupSound = new Audio('../../assets/Bonus/sfx_zap.ogg');
         function collisionDetection(){
             //Player - Bullet
             var livingPlayers=[];
@@ -280,7 +286,6 @@
                     shieldRatio = 1.5;
                 }
                 var data = {};
-                var damagesound = new Audio('../../assets/Bonus/sfx_lose.ogg');
 
                 for(var b in AllBullets){
                     if(AllBullets[b].explodeStage === 0) {
@@ -292,9 +297,8 @@
 
                             var distance = Math.sqrt((bulletHeadX - spaceShipX) * (bulletHeadX - spaceShipX) + (bulletHeadY - spaceShipY) * (bulletHeadY - spaceShipY));
 
-
-
                             if (distance < (AllBullets[b].width / 2 + AllPlayers[p].width / 2 * shieldRatio)) {
+                                damagesound.currentTime = 0;
                                 damagesound.play();
                                 if(!AllPlayers[p].shield){
                                     AllPlayers[p].increaseDamage();
@@ -318,6 +322,7 @@
                     if (distancePA < (AllAsteroids[a].width / 2 + AllPlayers[p].width / 2 * shieldRatio)) {
                         if(AllAsteroids[a].box === false){
                             AllAsteroids[a].box = true;
+                            damagesound.currentTime = 0;
                             damagesound.play();
                             if(AllPlayers[p].shield){
                                 var angleP = - (Math.atan2((AllAsteroids[a].y - AllPlayers[p].y),(AllAsteroids[a].x - AllPlayers[p].x))*180/Math.PI);
@@ -356,6 +361,7 @@
 
                         var distancePP = Math.sqrt((spaceShip1X - spaceShipX) * (spaceShip1X - spaceShipX) + (spaceShip1Y - spaceShipY) * (spaceShip1Y - spaceShipY));
                         if (distancePP < (AllPlayers[ap].width / 2 * shieldRatio1 + AllPlayers[p].width / 2 * shieldRatio)) {
+                            damagesound.currentTime = 0;
                             damagesound.play();
                             AllPlayers[p].dead();
                             AllPlayers[ap].dead();
@@ -373,6 +379,7 @@
                 //Player - Wall
                 if(AllPlayers[p].x*canv.width/100 < AllPlayers[p].height/2 || AllPlayers[p].x*canv.width/100 > canv.width-(AllPlayers[p].height/2)||
                     AllPlayers[p].y*canv.width/100 < AllPlayers[p].height/2 || AllPlayers[p].y*canv.width/100 > canv.width-(AllPlayers[p].height/2)){
+                    damagesound.currentTime = 0;
                     damagesound.play();
                     AllPlayers[p].dead();
                     data = {};
@@ -388,7 +395,7 @@
 
                     var distancePPU = Math.sqrt((powerupX - spaceShipX) * (powerupX - spaceShipX) + (powerupY - spaceShipY) * (powerupY - spaceShipY));
                     if (distancePPU < (AllPowerUps[pu].width / 2 + AllPlayers[p].width / 2)) {
-                        var powerupSound = new Audio('../../assets/Bonus/sfx_zap.ogg');
+                        powerupSound.currentTime = 0;
                         powerupSound.play();
                         if(AllPowerUps[pu].boolSelf === 1){
                             for(var player in AllPlayers){

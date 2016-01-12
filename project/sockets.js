@@ -80,7 +80,6 @@ module.exports = function (io) {
                     io.sockets.connected[selectedRoom.socketId].emit('updateusers', selectedRoom.players);
                     if(room.allRooms[leaveRoom].canJoin === false){
                         io.sockets.connected[selectedRoom.socketId].emit('userleft',leaveUser );
-                        console.log(leaveUser);
                     }
                 }
             }
@@ -88,13 +87,9 @@ module.exports = function (io) {
         
         socket.on("playerLife", function (data) {
             room.allRooms.selectRoomId(socket.id, function (error, roomid) {
-                console.log(roomid);
-                console.log(room.allRooms);
                 room.allRooms[roomid].selectUser(data.username, function (error, player) {
                     if (player !== null) {
-                        console.log('damage1');
                         if (io.sockets.connected[player.id]) {
-                            console.log('damage2');
                             io.sockets.connected[player.id].emit('life', data.life);
                         }
                     }
@@ -171,10 +166,6 @@ module.exports = function (io) {
 
         });
 
-        socket.on("pauseGame", function (data) {
-
-        });
-
         socket.on("endGame", function (username) {
             room.allRooms.selectRoomId(socket.id, function (error, roomId) {
                 room.allRooms[roomId].selectUser(username, function (error, player) {
@@ -186,7 +177,6 @@ module.exports = function (io) {
         });
 
         socket.on("restartGame", function (data) {
-            console.log("restartGame");
             room.allRooms.selectRoomId(socket.id, function (error, selectedRoomId) {
                 socket.to(room.allRooms[selectedRoomId].roomId).emit("message", "restartGame");
             });
