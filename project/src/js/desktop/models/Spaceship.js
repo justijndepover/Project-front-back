@@ -121,7 +121,9 @@ Spaceship.prototype.checkPowerup = function(){
         }else{
             switch(this.powerups[p].type){
                 case 1:
-                    this.speed --;
+                    if(this.speed>1){
+                        this.speed --;
+                    }
                     break;
                 case 2:
                     this.shield = false;
